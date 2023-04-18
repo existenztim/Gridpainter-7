@@ -41,8 +41,8 @@ function printLogin() {
 function loginUser(e) {
   e.preventDefault();
 
-  const name = document.querySelector('#loginUsername');
-  const password = document.querySelector('#loginPassword');
+  const name = document.querySelector('#loginUsername').value;
+  const password = document.querySelector('#loginPassword').value;
 
   if (name && password) {
     const user = { name, password };
@@ -62,8 +62,8 @@ function loginUser(e) {
 function createUser(e) {
   e.preventDefault();
 
-  const name = document.querySelector('#createUsername');
-  const password = document.querySelector('#createPassword');
+  const name = document.querySelector('#createUsername').value;
+  const password = document.querySelector('#createPassword').value;
 
   if (name && password) {
     const user = { name, password };
