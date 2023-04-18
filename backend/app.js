@@ -2,6 +2,8 @@ const app = require('express')();
 const mongoose = require('mongoose');
 require('dotenv').config();
 const server = require('http').createServer(app);
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
 async function init(){
   try {
@@ -38,4 +40,8 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
 server.listen(3000);
+module.exports = {app: app, server: server};
