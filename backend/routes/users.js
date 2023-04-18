@@ -17,7 +17,7 @@ router.post('/', async (req, res, next) => {
   });
   
   // SKAPA USER
-router.post('/add', async (req, res, next) => {
+  router.post('/add', async (req, res, next) => {
     const user = new UserModel(req.body)
     let encryptPassword = req.body.password;
     encryptPassword = CryptoJS.AES.encrypt(user.password, "salt key").toString();
@@ -31,7 +31,8 @@ router.post('/add', async (req, res, next) => {
       res.status(500).json({ msg: err });
     }
   })
-
+  
+  // LOGGA IN USER // VID FEL LÖSENORD SÅ SKALL SVARA MED 401
   router.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
   

@@ -4,6 +4,7 @@ require('dotenv').config();
 const server = require('http').createServer(app);
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+var bodyParser = require('body-parser')
 
 async function init(){
   try {
@@ -40,8 +41,11 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 server.listen(3000);
 module.exports = {app: app, server: server};
+
