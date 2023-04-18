@@ -1,6 +1,18 @@
 const app = require('express')();
-
+const mongoose = require('mongoose');
+require('dotenv').config();
 const server = require('http').createServer(app);
+
+async function init(){
+  try {
+  const options = {useNewUrlParser: true, useUnifiedTopology: true}
+  await mongoose.connect(process.env.MONGODB_URI_LOCAL, options); 
+  console.log('Mongoose connected successful!');
+} catch(error) {
+  console.error(error)
+  }
+}
+init()
 
 app.get('/', (req, res) => {
   res.send('Hej socket server!');
