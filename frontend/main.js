@@ -47,7 +47,15 @@ function loginUser(e) {
   if (name && password) {
     const user = { name, password };
 
-    fetch('');
+    fetch(BASE_URL + '/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/JSON',
+      },
+      body: JSON.stringify(user),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
   }
 }
 
@@ -56,6 +64,20 @@ function createUser(e) {
 
   const name = document.querySelector('#createUsername');
   const password = document.querySelector('#createPassword');
+
+  if (name && password) {
+    const user = { name, password };
+
+    fetch(BASE_URL + '/users/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/JSON',
+      },
+      body: JSON.stringify(user),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }
 }
 
 printLogin();
