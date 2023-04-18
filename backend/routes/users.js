@@ -32,23 +32,25 @@ router.post('/', async (req, res, next) => {
     }
   })
   
-  // LOGGA IN USER // VID FEL LÖSENORD SÅ SKALL SVARA MED 401
+  // LOGGA IN USER 
   router.post('/login', async (req, res, next) => {
-    const { email, password } = req.body;
+    const { name, password } = req.body;
+    const user = await UserModel.findOne({ name });
+  
+    if (!user) {
+      return res.status(400).json({ msg: 'No user found' });
+    }
+  
+    const decryptPassword = CryptoJS.AES.decrypt(user.password, "salt key").toString(CryptoJS.enc.Utf8);
+  
+    if (decryptPassword !== password) {
+      return res.status(400).json({ msg: 'Incorrect credentials' });
+    }
   
     try {
-      let user = await UserModel.findOne({ email });
-      if (!user) {
-        res.status(401).json({ msg: "Invalid credentials" });
-      }
-      //decrypt password
-      let decryptPassword = CryptoJS.AES.decrypt(user.password, "salt key").toString(CryptoJS.enc.Utf8);
-      if (password === decryptPassword) {
-        res.status(200).json(user);
-      } else {
-        res.status(401).json({ msg: "Invalid credentials" });
-      }
+      res.status(200).json(user);
     } catch (err) {
+      console.error(err);
       res.status(500).json({ msg: err });
     }
   });
