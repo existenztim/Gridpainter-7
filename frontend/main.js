@@ -1,3 +1,4 @@
+import './style.scss';
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
 const socket = io('http://localhost:3000');
@@ -22,7 +23,10 @@ function checkLogin() {
 function printGame() {
   app.innerHTML = `
    <h1>Welcome, ${user.name}</h1>
-   <button id="logoutBtn">Logout</button>`;
+   <button id="logoutBtn">Logout</button>
+   <table id="grid" border="1"></table>`;
+
+  createGrid();
 
   const logoutBtn = document.querySelector('#logoutBtn');
   logoutBtn.addEventListener('click', () => {
