@@ -2,6 +2,12 @@ h1 {
   text-align: center;
 }
 
+body { 
+    margin: 0; 
+    padding-bottom: 3rem; 
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+}
+
 .tr {
   height: 20px;
   width: 20px;
@@ -10,6 +16,29 @@ h1 {
 .td {
   height: 20px;
   width: 20px;
+}
+
+.messages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 20px;
+        max-width: 80%;
+        word-wrap: break-word;
+        font-size: 16px;
+    
+        &:nth-child(even) {
+        background-color: #c5e5f5;
+        }
+    
+        &:nth-child(odd) {
+        background-color: #d5f5e3;
+        }
+    }
 }
 
 #loginContainer {
@@ -24,8 +53,49 @@ h1 {
   border: 1px solid black;
   border-radius: 20px;
   box-shadow: 1px 1px 2px 1px grey;
-
-  input {
-    margin-bottom: 7px;
-  }
 }
+
+.form { 
+    background: rgba(0, 0, 0, 0.15); 
+    padding: 0.25rem; 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    height: 3rem; 
+    box-sizing: border-box; 
+    display: flex; 
+    align-items: center; 
+    backdrop-filter: blur(10px);
+  
+    button { 
+      background-color: #333; 
+      border: none; 
+      padding: 0 1rem; 
+      margin: 0 0.25rem; 
+      border-radius: 3px; 
+      outline: none; 
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.5;
+      white-space: nowrap;
+      cursor: pointer;
+    } 
+  
+    input {
+      border: none; 
+      padding: 10px; 
+      flex-grow: 1; 
+      border-radius: 20px; 
+      margin: 0.25rem;
+      background-color: #fff;
+      font-size: 16px;
+      line-height: 1.5;
+      box-sizing: border-box;
+      outline: none;
+  
+      &:focus {
+        outline: none;
+      } 
+    }
+  }

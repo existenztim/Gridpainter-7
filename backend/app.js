@@ -33,9 +33,15 @@ io.on('connection', (socket) => {
     console.log('Någon lämnade');
   });
 
-  socket.on('chat', (arg) => {
-    console.log('incoming chat', arg);
-    io.emit('chat', arg);
+  socket.on('chat', (argument) => {
+    console.log('incoming chat', argument, );
+    io.emit('chat', argument);
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (message, username) => {
+    io.emit("chat message", message, "username", username)
   });
 });
 
