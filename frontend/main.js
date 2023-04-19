@@ -7,6 +7,26 @@ socket.on('chat', (arg) => {
   console.log('chat', arg);
 });
 
+const form = document.querySelector('.form');
+const input = document.querySelector('.input');
+const messages = document.querySelector(".messages");
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+  if (input.value) {
+    socket.emit('chat message', input.value, );
+    input.value = '';
+  }
+});
+
+socket.on('chat message', function(message) {
+  const chatTextLi = document.createElement('li');
+  chatTextLi.textContent = message;
+  messages.appendChild(chatTextLi);
+  window.scrollTo(0, document.body.scrollHeight);
+});
+
+
 const app = document.querySelector('#app');
 let user = JSON.parse(localStorage.getItem('user'));
 const BASE_URL = 'http://localhost:3000';
