@@ -8,13 +8,35 @@ socket.on('chat', (arg) => {
 });
 
 const app = document.querySelector('#app');
-
+let user = JSON.parse(localStorage.getItem('user'));
 const BASE_URL = 'http://localhost:3000';
+
+function checkLogin() {
+  user = JSON.parse(localStorage.getItem('user'));
+  if (user) {
+    printGame();
+  } else {
+    printLogin();
+  }
+}
+
+function printGame() {
+  app.innerHTML = `
+   <h1>Welcome, ${user.name}</h1>
+   <button id="logoutBtn">Logout</button>`;
+
+  const logoutBtn = document.querySelector('#logoutBtn');
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('user');
+    checkLogin();
+  });
+}
 
 function printLogin() {
   app.innerHTML = `
    <div id="loginContainer">
-    <form id="loginUser">
+   <form id="loginUser">
+      <div id="loginMessage"></div>
       <input id="loginUsername" type="text" placeholder="Username">
       <br>
       <input id="loginPassword" type="password" placeholder="Password">
@@ -22,6 +44,7 @@ function printLogin() {
       <button>Login</button>
     </form>
     <form id="createUser">
+      <div id="createMessage"></div>
       <input id="createUsername" type="text" placeholder="Username">
       <br>
       <input id="createPassword" type="password" placeholder="Password">
@@ -54,8 +77,21 @@ function loginUser(e) {
       },
       body: JSON.stringify(user),
     })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw response.json();
+        }
+      })
+      .then((data) => {
+        localStorage.setItem('user', JSON.stringify(data));
+        checkLogin();
+      })
+      .catch((err) => {
+        const message = document.querySelector('#loginMessage');
+        message.innerHTML = "Name and password don't match.";
+      });
   }
 }
 
@@ -75,9 +111,22 @@ function createUser(e) {
       },
       body: JSON.stringify(user),
     })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((response) => {
+        if (response.status === 201) {
+          return response.json();
+        } else {
+          throw response.json();
+        }
+      })
+      .then((data) => {
+        const message = document.querySelector('#createMessage');
+        message.innerHTML = 'User created!';
+      })
+      .catch((err) => {
+        const message = document.querySelector('#createMessage');
+        message.innerHTML = 'Name is already taken.';
+      });
   }
 }
 
-printLogin();
+checkLogin();
