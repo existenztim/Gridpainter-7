@@ -21,40 +21,65 @@ body {
     bottom: 0; 
     left: 0; 
     right: 0; 
-    display: flex; 
     height: 3rem; 
     box-sizing: border-box; 
-    backdrop-filter: blur(10px); 
-    & > button { 
-        background: #333; 
-        border: none; 
-        padding: 0 1rem; 
-        margin: 0.25rem; 
-        border-radius: 3px; 
-        outline: none; 
-        color: #fff; }
-} 
-
-
-.input {
-     border: none; 
-     padding: 0 1rem; 
-     flex-grow: 1; 
-     border-radius: 2rem; 
-     margin: 0.25rem;
-     & :focus {
+    display: flex; 
+    align-items: center; 
+    backdrop-filter: blur(10px);
+  
+    button { 
+      background-color: #333; 
+      border: none; 
+      padding: 0 1rem; 
+      margin: 0 0.25rem; 
+      border-radius: 3px; 
+      outline: none; 
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.5;
+      white-space: nowrap;
+      cursor: pointer;
+    } 
+  
+    input {
+      border: none; 
+      padding: 10px; 
+      flex-grow: 1; 
+      border-radius: 20px; 
+      margin: 0.25rem;
+      background-color: #fff;
+      font-size: 16px;
+      line-height: 1.5;
+      box-sizing: border-box;
+      outline: none;
+  
+      &:focus {
         outline: none;
-     } 
+      } 
     }
+  }
+  
 
-    .messages { 
-        list-style-type: none; 
-        margin: 0; 
-        padding: 0; 
-    & > li {
-         padding: 0.5rem 1rem; 
+    .messages {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      
+        li {
+          margin-bottom: 10px;
+          padding: 10px;
+          border-radius: 20px;
+          max-width: 80%;
+          word-wrap: break-word;
+          font-size: 16px;
+      
+          &:nth-child(even) {
+            background-color: #c5e5f5;
+          }
+      
+          &:nth-child(odd) {
+            background-color: #d5f5e3;
+          }
         }
-    & > li:nth-child(odd) { 
-        background: #efefef; 
-        }    
-    }
+      }
+      

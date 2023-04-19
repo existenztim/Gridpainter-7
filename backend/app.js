@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:5174',
+    origin: 'http://127.0.0.1:5502',
     methods: ['GET', 'POST'],
   },
 });
@@ -35,9 +35,15 @@ io.on('connection', (socket) => {
     console.log('Någon lämnade');
   });
 
-  socket.on('chat', (arg) => {
-    console.log('incoming chat', arg);
-    io.emit('chat', arg);
+  socket.on('chat', (argument) => {
+    console.log('incoming chat', argument, );
+    io.emit('chat', argument);
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', (message, username) => {
+    io.emit("chat message", message, "username", username)
   });
 });
 
