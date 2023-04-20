@@ -8,14 +8,18 @@ body {
     font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
 }
 
-.tr {
-  height: 20px;
-  width: 20px;
+#grid {
+  display: grid;
+  grid-template-columns: repeat(15, 20px);
+  grid-gap: 2px;
+  padding: 4px;
+  max-width: fit-content;
 }
 
-.td {
+.cell {
   height: 20px;
   width: 20px;
+  border: 1px solid black;
 }
 
 .messages {
