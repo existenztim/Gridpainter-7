@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
       const color = availableColors[0];
       connectedUsers[socket.id] = color;
       socket.emit('joinResponse', { color });
+      socket.emit('gridData', { grid });
     } else {
       socket.emit('gameFull');
       return;
