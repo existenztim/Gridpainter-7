@@ -30,7 +30,7 @@ function printGame() {
   </form>
   <ul class="messages"></ul>`;
 
-  game.innerHTML += `
+  game.innerHTML += /*html*/`
   <button id='joinButton'>Join game</button>
   <table id="grid" border="1"></table>`;
   
@@ -69,7 +69,7 @@ const messages = document.querySelector(".messages");
 form.addEventListener('submit', function(event) {
   event.preventDefault();
   if (input.value) {
-    socket.emit('chat message', input.value, );
+    socket.emit('chat message', input.value, user.name);
     input.value = '';
   }
 });
@@ -78,9 +78,9 @@ socket.on('chat', (arg) => {
   console.log('chat', arg);
 });
 
-socket.on('chat message', function(message) {
+socket.on('chat message', function(message, username) {
   const chatTextLi = document.createElement('li');
-  chatTextLi.textContent = message;
+  chatTextLi.textContent = username + ": " + message; 
   messages.appendChild(chatTextLi);
   window.scrollTo(0, document.body.scrollHeight);
 });

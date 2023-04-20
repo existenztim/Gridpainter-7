@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
   socket.on('chat message', (message, username) => {
-    io.emit("chat message", message, "username", username)
+    io.emit('chat message', message, username);
   });
 
   io.emit('gridData', { grid });
