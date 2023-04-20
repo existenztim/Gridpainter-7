@@ -16,7 +16,7 @@ const colors = ['red', 'blue', 'yellow', 'green'];
 async function init() {
   try {
     const options = { useNewUrlParser: true, useUnifiedTopology: true };
-    await mongoose.connect(process.env.MONGODB_URI_LOCAL, options);
+    await mongoose.connect(process.env.MONGODB_URI_CLOUD, options);
     console.log('Mongoose connected successful!');
   } catch (error) {
     console.error(error);
