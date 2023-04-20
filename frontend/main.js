@@ -49,6 +49,7 @@ function printGame() {
   const logoutBtn = document.querySelector('#logoutBtn');
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('user');
+    game.innerHTML = '';
     checkLogin();
   });
 }
