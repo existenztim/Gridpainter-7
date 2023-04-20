@@ -41,10 +41,11 @@ for (let y = 0; y < 15; y++) {
 
 io.on('connection', (socket) => {
   function joinRequest() {
-    if (Object.keys(connectedUsers).length < 4) {
+    if (Object.keys(connectedUsers).length <= 4) {
       const availableColors = colors.filter(color => !Object.values(connectedUsers).includes(color));
       const color = availableColors[0];
       connectedUsers[socket.id] = color;
+      console.log("new user connected:", socket.id, "with color:", color);
       socket.emit('joinResponse', { color });
       socket.emit('gridData', { grid });
     } else {

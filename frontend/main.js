@@ -2,9 +2,9 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
 const socket = io('http://localhost:3000');
 
-socket.on('chat', (arg) => {
-  console.log('chat', arg);
-});
+// socket.on('chat', (arg) => {
+//   console.log('chat', arg);
+// });
 
 const app = document.querySelector('#app');
 const game = document.querySelector('#game');
@@ -32,7 +32,17 @@ function printGame() {
   const joinButton = document.getElementById('joinButton');
   const exitButton = document.createElement('button');
   exitButton.innerText = 'Exit game';
-
+  
+  socket.on('gridData', ({ grid }) => {
+    for (let y = 0; y < 15; y++) {
+      for (let x = 0; x < 15; x++) {
+        const cell = grid[y][x];
+        const gridCell = document.getElementById(`cell-${x}-${y}`);
+        gridCell.style.backgroundColor = cell;
+      }
+    }
+  });
+  
   joinButton.addEventListener('click', () => {
     socket.emit('join');
     joinButton.remove();
@@ -176,15 +186,7 @@ socket.on('joinResponse', ({ color }) => {
   console.log(`Joined with color ${color}`);
 });
 
-socket.on('gridData', ({ grid }) => {
-  for (let y = 0; y < 15; y++) {
-    for (let x = 0; x < 15; x++) {
-      const cell = grid[y][x];
-      const gridCell = document.getElementById(`cell-${x}-${y}`);
-      gridCell.style.backgroundColor = cell;
-    }
-  }
-});
+
 
 socket.on('gameFull', () => {
   const gridTable = document.getElementById('grid');
