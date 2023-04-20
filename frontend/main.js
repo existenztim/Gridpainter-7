@@ -1,4 +1,3 @@
-import './style.scss';
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
 const socket = io('http://localhost:3000');
@@ -8,6 +7,7 @@ socket.on('chat', (arg) => {
 });
 
 const app = document.querySelector('#app');
+const game = document.querySelector('#game');
 let user = JSON.parse(localStorage.getItem('user'));
 const BASE_URL = 'http://localhost:3000';
 
@@ -22,9 +22,27 @@ function checkLogin() {
 
 function printGame() {
   app.innerHTML = `
-   <h1>Welcome, ${user.name}</h1>
-   <button id="logoutBtn">Logout</button>
-   <table id="grid" border="1"></table>`;
+  <h1>Welcome, ${user.name}</h1>
+  <button id="logoutBtn">Logout</button>`
+
+  game.innerHTML += `
+  <button id='joinButton'>Join game</button>
+  <table id="grid" border="1"></table>`;
+
+  const joinButton = document.getElementById('joinButton');
+  const exitButton = document.createElement('button');
+  exitButton.innerText = 'Exit game';
+
+  joinButton.addEventListener('click', () => {
+    socket.emit('join');
+    joinButton.remove();
+    game.prepend(exitButton);
+    exitButton.addEventListener('click', () => {
+      socket.emit('exitGame');
+      exitButton.remove();
+      game.prepend(joinButton);
+    });
+  });
 
   createGrid();
 
@@ -132,25 +150,52 @@ function createUser(e) {
   }
 }
 
+const connectedUsers = {};
+
 function createGrid() {
-  let grid = document.getElementById('grid');
-
-  for (let i = 0; i < 16; i++) {
-    let row = document.createElement('tr');
-    row.classList.add('tr');
-
-    for (let j = 0; j < 16; j++) {
-      let cell = document.createElement('td');
-      cell.classList.add('td');
+  const gridTable = document.getElementById('grid');
+  for (let y = 0; y < 15; y++) {
+    for (let x = 0; x < 15; x++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.setAttribute('id', `cell-${x}-${y}`);
 
       cell.addEventListener('click', () => {
-        console.log(i, j);
+        const color = connectedUsers[socket.id];
+        cell.style.backgroundColor = color;
+        socket.emit('updateGridCell', { x, y, color });
       });
 
-      row.appendChild(cell);
+      gridTable.append(cell);
     }
-    grid.appendChild(row);
   }
 }
+
+socket.on('joinResponse', ({ color }) => {
+  console.log(`Joined with color ${color}`);
+});
+
+socket.on('gridData', ({ grid }) => {
+  for (let y = 0; y < 15; y++) {
+    for (let x = 0; x < 15; x++) {
+      const cell = grid[y][x];
+      const gridCell = document.getElementById(`cell-${x}-${y}`);
+      gridCell.style.backgroundColor = cell;
+    }
+  }
+});
+
+socket.on('gameFull', () => {
+  const gridTable = document.getElementById('grid');
+  gridTable.style.pointerEvents = 'none';
+  const message = document.createElement('h2');
+  message.innerText = 'The game is currently full';
+  gridTable.before(message);
+
+  socket.on('joinResponse', () => {
+    message.remove();
+    gridTable.style.pointerEvents = 'auto';
+  });
+});
 
 checkLogin();
