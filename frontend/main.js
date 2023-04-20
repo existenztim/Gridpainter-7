@@ -6,6 +6,10 @@ const socket = io('http://localhost:3000');
 //   console.log('chat', arg);
 // });
 
+
+
+
+
 const app = document.querySelector('#app');
 const game = document.querySelector('#game');
 let user = JSON.parse(localStorage.getItem('user'));
@@ -32,7 +36,9 @@ function printGame() {
 
   game.innerHTML += `
   <button id='joinButton'>Join game</button>
-  <table id="grid" border="1"></table>`;
+  <h2 id="timer"></h2>
+  <table id="grid" border="1"></table>
+  `;
   
 
   const joinButton = document.getElementById('joinButton');
@@ -50,15 +56,42 @@ function printGame() {
   });
   
   joinButton.addEventListener('click', () => {
+
+    let timer = document.getElementById('timer')
+    let myInterval = setInterval(setTimer, 1000);
+
+    const minutesFromStart = 5;
+    let time = minutesFromStart * 60;
+
+    function setTimer(){
+      const minutes = Math.floor(time / 60);
+      let seconds = time % 60;
+
+      seconds = seconds < 10? "0" + seconds : seconds;
+      timer.innerHTML = `Time left: ${minutes}:${seconds}`;
+      time --;
+      time = time < -1 ? -1 : time;
+
+      if (time === -1) {
+      clearInterval(myInterval);
+      alert("Time over");
+      timer.innerHTML = "";
+      } return;
+    }
+
+
     socket.emit('join');
     joinButton.remove();
     game.prepend(exitButton);
+
+   
     exitButton.addEventListener('click', () => {
       socket.emit('exitGame');
       exitButton.remove();
       game.prepend(joinButton);
     });
   });
+
 
   createGrid();
 
@@ -90,7 +123,9 @@ socket.on('chat message', function(message) {
     localStorage.removeItem('user');
     game.innerHTML = '';
     checkLogin();
+
   });
+ 
 }
 
 function printLogin() {
@@ -231,3 +266,32 @@ socket.on('gameFull', () => {
 });
 
 checkLogin();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
