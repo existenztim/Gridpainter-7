@@ -2,34 +2,9 @@ import './style.scss';
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
 const socket = io('http://localhost:3003');
-
-socket.on('chat', (arg) => {
-  console.log('chat', arg);
-});
-
-const form = document.querySelector('.form');
-const input = document.querySelector('.input');
-const messages = document.querySelector(".messages");
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
-  if (input.value) {
-    socket.emit('chat message', input.value, );
-    input.value = '';
-  }
-});
-
-socket.on('chat message', function(message) {
-  const chatTextLi = document.createElement('li');
-  chatTextLi.textContent = message;
-  messages.appendChild(chatTextLi);
-  window.scrollTo(0, document.body.scrollHeight);
-});
-
-
 const app = document.querySelector('#app');
 let user = JSON.parse(localStorage.getItem('user'));
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3003';
 
 function checkLogin() {
   user = JSON.parse(localStorage.getItem('user'));
@@ -44,9 +19,37 @@ function printGame() {
   app.innerHTML = `
    <h1>Welcome, ${user.name}</h1>
    <button id="logoutBtn">Logout</button>
-   <table id="grid" border="1"></table>`;
+   <table id="grid" border="1"></table>
+   <form class="form">
+   <input class="input" type="text"></input>
+   <button class="submitButton">Send</button>
+   </form>
+   <ul class="messages"></ul>`;
 
   createGrid();
+
+const form = document.querySelector('.form');
+const input = document.querySelector('.input');
+const messages = document.querySelector(".messages");
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+  if (input.value) {
+    socket.emit('chat message', input.value, );
+    input.value = '';
+  }
+});
+
+socket.on('chat', (arg) => {
+  console.log('chat', arg);
+});
+
+socket.on('chat message', function(message) {
+  const chatTextLi = document.createElement('li');
+  chatTextLi.textContent = message;
+  messages.appendChild(chatTextLi);
+  window.scrollTo(0, document.body.scrollHeight);
+});
 
   const logoutBtn = document.querySelector('#logoutBtn');
   logoutBtn.addEventListener('click', () => {
