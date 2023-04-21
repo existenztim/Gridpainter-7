@@ -1,6 +1,7 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
-const socket = io('http://localhost:3000');
+//const socketLocal = io('http://localhost:3000');
+const socket = io('https://sea-lion-app-cr49a.ondigitalocean.app');
 
 // socket.on('chat', (arg) => {
 //   console.log('chat', arg);
@@ -10,6 +11,7 @@ const app = document.querySelector('#app');
 const game = document.querySelector('#game');
 let user = JSON.parse(localStorage.getItem('user'));
 const BASE_URL = 'http://localhost:3000';
+const CLOUD_URL = 'https://sea-lion-app-cr49a.ondigitalocean.app';
 
 function checkLogin() {
   user = JSON.parse(localStorage.getItem('user'));
@@ -94,7 +96,7 @@ socket.on('chat message', function(message, username) {
 }
 
 function printLogin() {
-  app.innerHTML = `
+  app.innerHTML = /*html*/`
    <div id="loginContainer">
    <form id="loginUser">
       <div id="loginMessage"></div>
@@ -131,7 +133,7 @@ function loginUser(e) {
   if (name && password) {
     const user = { name, password };
 
-    fetch(BASE_URL + '/users/login', {
+    fetch(CLOUD_URL + '/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/JSON',
@@ -165,7 +167,7 @@ function createUser(e) {
   if (name && password) {
     const user = { name, password };
 
-    fetch(BASE_URL + '/users/add', {
+    fetch(CLOUD_URL + '/users/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/JSON',
