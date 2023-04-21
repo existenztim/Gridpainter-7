@@ -42,22 +42,24 @@ for (let y = 0; y < 15; y++) {
 io.on('connection', (socket) => {
   function joinRequest() {
     if (Object.keys(connectedUsers).length <= 4) {
-      const availableColors = colors.filter(color => !Object.values(connectedUsers).includes(color));
+      const availableColors = colors.filter(
+        (color) => !Object.values(connectedUsers).includes(color)
+      );
       const color = availableColors[0];
       connectedUsers[socket.id] = color;
-      console.log("new user connected:", socket.id, "with color:", color);
+      console.log('new user connected:', socket.id, 'with color:', color);
       socket.emit('joinResponse', { color });
       socket.emit('gridData', { grid });
     } else {
       socket.emit('gameFull');
       return;
     }
-  };
-
+  }
+  console.log('Hej');
 
   socket.on('join', () => {
     joinRequest();
-    connectedUsers[socket.id] = user.name;
+    // connectedUsers[socket.id] = user.name;
   });
 
   socket.on('updateGridCell', ({ x, y, color }) => {
@@ -74,16 +76,16 @@ io.on('connection', (socket) => {
       io.emit('updateUsersList', { users: Object.values(connectedUsers) });
       console.log('Någon lämnade');
     }
-  socket.on('chat', (argument) => {
-    console.log('incoming chat', argument, );
-    io.emit('chat', argument);
+    socket.on('chat', (argument) => {
+      console.log('incoming chat', argument);
+      io.emit('chat', argument);
+    });
   });
 });
-})
 
 io.on('connection', (socket) => {
   socket.on('chat message', (message, username) => {
-    io.emit("chat message", `${username}: ${message}`)
+    io.emit('chat message', `${username}: ${message}`);
     console.log('Någon är här!');
   });
 
@@ -96,5 +98,5 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-server.listen(3003);
+server.listen(3000);
 module.exports = { app: app, server: server };

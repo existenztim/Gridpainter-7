@@ -1,6 +1,7 @@
+import './style.scss';
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
-const socket = io('http://localhost:3003');
+const socket = io('http://localhost:3000');
 
 // socket.on('chat', (arg) => {
 //   console.log('chat', arg);
@@ -9,7 +10,7 @@ const socket = io('http://localhost:3003');
 const app = document.querySelector('#app');
 const game = document.querySelector('#game');
 let user = JSON.parse(localStorage.getItem('user'));
-const BASE_URL = 'http://localhost:3003';
+const BASE_URL = 'http://localhost:3000';
 
 function checkLogin() {
   user = JSON.parse(localStorage.getItem('user'));
@@ -21,7 +22,7 @@ function checkLogin() {
 }
 
 function printGame() {
-  app.innerHTML = /*html*/`
+  app.innerHTML = /*html*/ `
   <h1>Welcome, ${user.name}</h1>
   <button id="logoutBtn">Logout</button>
   <form class="form">
@@ -33,12 +34,11 @@ function printGame() {
   game.innerHTML += `
   <button id='joinButton'>Join game</button>
   <table id="grid" border="1"></table>`;
-  
 
   const joinButton = document.getElementById('joinButton');
   const exitButton = document.createElement('button');
   exitButton.innerText = 'Exit game';
-  
+
   socket.on('gridData', ({ grid }) => {
     for (let y = 0; y < 15; y++) {
       for (let x = 0; x < 15; x++) {
@@ -48,7 +48,7 @@ function printGame() {
       }
     }
   });
-  
+
   joinButton.addEventListener('click', () => {
     socket.emit('join');
     joinButton.remove();
@@ -62,38 +62,36 @@ function printGame() {
 
   createGrid();
 
-const form = document.querySelector('.form');
-const input = document.querySelector('.input');
-const messages = document.querySelector(".messages");
+  const form = document.querySelector('.form');
+  const input = document.querySelector('.input');
+  const messages = document.querySelector('.messages');
 
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (input.value) {
+      socket.emit('chat message', input.value, user.name);
+      input.value = '';
+    }
+  });
 
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
-  if (input.value) {
-    socket.emit('chat message', input.value, user.name );
-    input.value = '';
-  }
-});
+  socket.on('chat', (arg) => {
+    console.log('chat', arg);
+  });
 
-socket.on('chat', (arg) => {
-  console.log('chat', arg);
-});
+  socket.on('chat message', function (message) {
+    const [username, text] = message.split(': ');
+    const chatTextLi = document.createElement('li');
+    chatTextLi.innerHTML = `<strong>${username}:</strong> ${text}`;
 
-socket.on('chat message', function(message) {
-  const [username, text] = message.split(": ");
-  const chatTextLi = document.createElement('li');
-  chatTextLi.innerHTML = `<strong>${username}:</strong> ${text}`;
-  
-  if(username === user.name) {
-    chatTextLi.classList.add("sent");
-  } else {
-    chatTextLi.classList.add("received");
-  }
-  
-  messages.appendChild(chatTextLi);
-  window.scrollTo(0, document.body.scrollHeight);
-});
+    if (username === user.name) {
+      chatTextLi.classList.add('sent');
+    } else {
+      chatTextLi.classList.add('received');
+    }
 
+    messages.appendChild(chatTextLi);
+    window.scrollTo(0, document.body.scrollHeight);
+  });
 
   const logoutBtn = document.querySelector('#logoutBtn');
   logoutBtn.addEventListener('click', () => {
@@ -106,7 +104,8 @@ socket.on('chat message', function(message) {
 function printLogin() {
   app.innerHTML = `
    <div id="loginContainer">
-   <form id="loginUser">
+    <form id="loginUser">
+      <h4>Login:</h4>
       <div id="loginMessage"></div>
       <input id="loginUsername" type="text" placeholder="Username">
       <br>
@@ -115,6 +114,7 @@ function printLogin() {
       <button>Login</button>
     </form>
     <form id="createUser">
+      <h4>Create user:</h4>
       <div id="createMessage"></div>
       <input id="createUsername" type="text" placeholder="Username">
       <br>
@@ -140,7 +140,7 @@ function loginUser(e) {
 
   if (name && password) {
     const user = { name, password };
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
 
     fetch(BASE_URL + '/users/login', {
       method: 'POST',
@@ -225,8 +225,6 @@ function createGrid() {
 socket.on('joinResponse', ({ color }) => {
   console.log(`Joined with color ${color}`);
 });
-
-
 
 socket.on('gameFull', () => {
   const gridTable = document.getElementById('grid');
