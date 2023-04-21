@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
 
   socket.on('join', () => {
     joinRequest();
+    connectedUsers[socket.id] = user.name;
   });
 
   socket.on('updateGridCell', ({ x, y, color }) => {
@@ -71,6 +72,7 @@ io.on('connection', (socket) => {
     if (connectedUsers[socket.id]) {
       delete connectedUsers[socket.id];
       io.emit('updateUsersList', { users: Object.values(connectedUsers) });
+      console.log('Någon lämnade');
     }
   socket.on('chat', (argument) => {
     console.log('incoming chat', argument, );
@@ -81,7 +83,8 @@ io.on('connection', (socket) => {
 
 io.on('connection', (socket) => {
   socket.on('chat message', (message, username) => {
-    io.emit("chat message", message, "username", username)
+    io.emit("chat message", `${username}: ${message}`)
+    console.log('Någon är här!');
   });
 
   io.emit('gridData', { grid });
@@ -93,5 +96,5 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-server.listen(3000);
+server.listen(3003);
 module.exports = { app: app, server: server };

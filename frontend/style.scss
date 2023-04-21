@@ -34,14 +34,6 @@ body {
         max-width: 80%;
         word-wrap: break-word;
         font-size: 16px;
-    
-        &:nth-child(even) {
-        background-color: #c5e5f5;
-        }
-    
-        &:nth-child(odd) {
-        background-color: #d5f5e3;
-        }
     }
 }
 
@@ -103,3 +95,14 @@ body {
       } 
     }
   }
+
+  .sent {
+    background-color: #DCF8C6; /* light green */
+    color: #000; /* black */
+  }
+  
+  .received {
+    background-color: #CCE5FF; /* light blue */
+    color: #000; /* black */
+  }
+  
