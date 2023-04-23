@@ -53,9 +53,10 @@ function printChat() {
     event.preventDefault();
    const room = selectedRom.value;
     if (input.value && room.length > 0) {
-      socket.emit('chat message', input.value, user.name);
+      displayMessage(input.value);
+      socket.emit('chat message', input.value, user.name, room);
       input.value = '';
-      chatFeedBack.innerText=`${selectedRom.value}`;
+      chatFeedBack.innerText=`${room}`;
     } else {
       chatFeedBack.innerText="You either try to send an empty message or haven't joined a room."
     }
@@ -63,12 +64,14 @@ function printChat() {
 
   joinRoomBtn.addEventListener("click", () => {
     const room = selectedRom.value;
-    console.log(room.length);
+    socket.emit("join-room", room)
+    console.log(`joined room :${room}`);
   })
 
   socket.on('chat', (arg) => {
     console.log('chat', arg);
   });
+  
 
   socket.on('chat message', function (message) {
     const [username, text] = message.split(': ');
@@ -82,9 +85,13 @@ function printChat() {
     }
 
     messages.appendChild(chatTextLi);
-    window.scrollTo(0, document.body.scrollHeight);
   });
 }
+// function displayMessage(message) {
+//   const li = document.createElement("li");
+//   li.textContent = message;
+//   document.querySelector(".messages").append(li);
+// }
 
 function printGame() {
   game.innerHTML += /*html*/`
