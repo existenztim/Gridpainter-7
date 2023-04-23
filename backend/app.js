@@ -31,13 +31,6 @@ const io = require('socket.io')(server, {
   },
 });
 
-for (let y = 0; y < 15; y++) {
-  let row = [];
-  for (let x = 0; x < 15; x++) {
-    row.push('white');
-  }
-  grid.push(row);
-}
 
 io.on('connection', (socket) => {
   function joinRequest() {
@@ -83,9 +76,10 @@ io.on('connection', (socket) => {
 });
 io.on('connection', (socket) => {
 
+  
   socket.on('chat message', (message, username, room) => {
-     socket.emit('chat message', `${username}: ${message}`);
-     console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
+    io.to(room).emit('chat message', `${username}: ${message}`);
+    console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
   });
   socket.on("join-room", room => {
     socket.join(room);

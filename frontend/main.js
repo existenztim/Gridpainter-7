@@ -53,7 +53,6 @@ function printChat() {
     event.preventDefault();
    const room = selectedRom.value;
     if (input.value && room.length > 0) {
-      displayMessage(input.value);
       socket.emit('chat message', input.value, user.name, room);
       input.value = '';
       chatFeedBack.innerText=`${room}`;
