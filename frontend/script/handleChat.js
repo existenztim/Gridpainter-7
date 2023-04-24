@@ -1,6 +1,6 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
-
+import moment from "moment";
 
 export function printChat() {
     const socket = io('http://localhost:3000');
@@ -48,7 +48,8 @@ export function printChat() {
       }
     });
   
-    joinRoomBtn.addEventListener("click", () => {
+    joinRoomBtn.addEventListener("click", (event) => {
+      event.preventDefault();
       const room = selectedRom.value;
       if (room){    
       messages.innerHTML= "";
@@ -70,12 +71,12 @@ export function printChat() {
       console.log('chat', arg);
     });
     
-  
     socket.on('chat message', function (message) {
       const [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
-      chatTextLi.innerHTML = `<span>11:00 </span><strong>${username}:</strong> ${text}`;
-  
+      const timestap = moment(document.createDate).format("HH:mm:ss")
+      chatTextLi.innerHTML = `<span>${timestap} </span><strong>${username}:</strong> ${text}`;
+        
       if (username === user.name) {
         chatTextLi.classList.add('sent');
       } else {
@@ -84,4 +85,11 @@ export function printChat() {
   
       messages.appendChild(chatTextLi);
     });
+
+    socket.on("join-room", function (room) { // <-- add this block
+  const joinMessageLi = document.createElement('li');
+  joinMessageLi.innerText = `${user.name} has joined the room!`;
+  joinMessageLi.classList.add('sent');
+  messages.appendChild(joinMessageLi);
+})
   }

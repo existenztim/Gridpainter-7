@@ -82,19 +82,21 @@ io.on('connection', (socket) => {
     });
   });
 });
-io.on('connection', (socket) => {
 
-  
+io.on('connection', (socket) => {
   socket.on('chat message', (message, username, room) => {
     io.to(room).emit('chat message', `${username}: ${message}`);
     console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
   });
-  socket.on("join-room", room => {
+    socket.on("join-room", (room, username) => { // <-- update this line
+    socket.emit('join-room', room, username); 
     socket.join(room);
     console.log(room);
+    io.to(room).emit('chat message', `Welcome to ${room} ${username}, say hello!`); // <-- add this line
   })
-  //io.emit('gridData', { grid });
-  //io.emit('updateUsersList', { users: Object.values(connectedUsers) });
+
+  io.emit('gridData', { grid });
+  io.emit('updateUsersList', { users: Object.values(connectedUsers) });
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
