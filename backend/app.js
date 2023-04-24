@@ -39,6 +39,7 @@ for (let y = 0; y < 15; y++) {
   grid.push(row);
 }
 
+
 io.on('connection', (socket) => {
   function joinRequest() {
     if (Object.keys(connectedUsers).length <= 4) {
@@ -55,13 +56,12 @@ io.on('connection', (socket) => {
       return;
     }
   }
-  console.log('Hej');
 
   socket.on('join', () => {
     joinRequest();
     // connectedUsers[socket.id] = user.name;
   });
-
+  
   socket.on('updateGridCell', ({ x, y, color }) => {
     if (connectedUsers[socket.id]) {
       grid[y][x] = connectedUsers[socket.id];
@@ -82,15 +82,19 @@ io.on('connection', (socket) => {
     });
   });
 });
-
 io.on('connection', (socket) => {
-  socket.on('chat message', (message, username) => {
-    io.emit('chat message', `${username}: ${message}`);
-    console.log('Någon är här!');
-  });
 
-  io.emit('gridData', { grid });
-  io.emit('updateUsersList', { users: Object.values(connectedUsers) });
+  
+  socket.on('chat message', (message, username, room) => {
+    io.to(room).emit('chat message', `${username}: ${message}`);
+    console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
+  });
+  socket.on("join-room", room => {
+    socket.join(room);
+    console.log(room);
+  })
+  //io.emit('gridData', { grid });
+  //io.emit('updateUsersList', { users: Object.values(connectedUsers) });
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -53,11 +53,7 @@ body {
 
 .form { 
     background: rgba(0, 0, 0, 0.15); 
-    padding: 0.25rem; 
-    position: fixed; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
+    padding: 0.25rem;  
     height: 3rem; 
     box-sizing: border-box; 
     display: flex; 
@@ -96,13 +92,44 @@ body {
     }
   }
 
+  .messages {
+    height: 300px;
+    overflow: scroll;
+  }
+
   .sent {
     background-color: #DCF8C6; /* light green */
     color: #000; /* black */
+    margin: 2rem 0;
+    animation: 1s ease-in 0s 1 slidein;
   }
   
   .received {
     background-color: #CCE5FF; /* light blue */
     color: #000; /* black */
+    margin: 2rem 0;
+    animation: 1s ease-in 0s 1 slidein;
+  }
+
+  .sent span, .received span {
+    color: #fff;
+    transform: translateY(-140%);
+    position: fixed;
+    background-color: #6576c2;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    padding: 2px;
+    
   }
   
+  @keyframes slidein {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
