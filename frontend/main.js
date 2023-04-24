@@ -27,6 +27,8 @@ function printChat() {
   <h1>Welcome, ${user.name}</h1>
   <button id="logoutBtn">Logout</button>
   <h2 id="chatFeedback"></h2>
+  <h3 id="roomNumber"></h3>
+  <ul class="messages"></ul>
   <form class="form">
   <input class="input" type="text">
   <select name="rooms" id="roomSelect">
@@ -39,7 +41,7 @@ function printChat() {
   <button class="roomButton">Join Room</button>
   <button class="submitButton">Send</button>
   </form>
-  <ul class="messages"></ul>
+ 
  `;
 
   const form = document.querySelector('.form');
@@ -48,6 +50,7 @@ function printChat() {
   const joinRoomBtn = document.querySelector(".roomButton");
   const selectedRom = document.querySelector("#roomSelect"); 
   const chatFeedBack = document.querySelector("#chatFeedback");
+  const roomNumber = document.querySelector("#roomNumber");
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -55,16 +58,23 @@ function printChat() {
     if (input.value && room.length > 0) {
       socket.emit('chat message', input.value, user.name, room);
       input.value = '';
-      chatFeedBack.innerText=`${room}`;
-    } else {
-      chatFeedBack.innerText="You either try to send an empty message or haven't joined a room."
+      chatFeedBack.innerText="";
+    } else if (input.value){
+      chatFeedBack.innerText="You haven't joined a room.";
+      roomNumber.innerText= "";
     }
   });
 
   joinRoomBtn.addEventListener("click", () => {
     const room = selectedRom.value;
+    if (room){    
+    messages.innerHTML= "";
+    roomNumber.innerText=`Chatting in: ${room}`;
     socket.emit("join-room", room)
     console.log(`joined room :${room}`);
+  } else {
+    roomNumber.innerText= "";
+  }
   })
 
   socket.on('chat', (arg) => {
@@ -75,7 +85,7 @@ function printChat() {
   socket.on('chat message', function (message) {
     const [username, text] = message.split(': ');
     const chatTextLi = document.createElement('li');
-    chatTextLi.innerHTML = `<strong>${username}:</strong> ${text}`;
+    chatTextLi.innerHTML = `<span>11:00 </span><strong>${username}:</strong> ${text}`;
 
     if (username === user.name) {
       chatTextLi.classList.add('sent');
@@ -86,11 +96,6 @@ function printChat() {
     messages.appendChild(chatTextLi);
   });
 }
-// function displayMessage(message) {
-//   const li = document.createElement("li");
-//   li.textContent = message;
-//   document.querySelector(".messages").append(li);
-// }
 
 function printGame() {
   game.innerHTML += /*html*/`
