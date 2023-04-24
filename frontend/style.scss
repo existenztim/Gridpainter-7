@@ -101,12 +101,14 @@ body {
     background-color: #DCF8C6; /* light green */
     color: #000; /* black */
     margin: 2rem 0;
+    animation: 1s ease-in 0s 1 slidein;
   }
   
   .received {
     background-color: #CCE5FF; /* light blue */
     color: #000; /* black */
     margin: 2rem 0;
+    animation: 1s ease-in 0s 1 slidein;
   }
 
   .sent span, .received span {
@@ -120,3 +122,14 @@ body {
     
   }
   
+  @keyframes slidein {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
