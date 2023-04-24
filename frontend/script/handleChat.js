@@ -1,11 +1,11 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
+import { checkLogin } from '../main';
 
-const socket = io('http://localhost:3000');
-
-const app = document.querySelector('#app');
-let user = JSON.parse(localStorage.getItem('user'));
 
 export function printChat() {
+    const socket = io('http://localhost:3000');
+    let user = JSON.parse(localStorage.getItem('user'));
+    const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
     <h1>Welcome, ${user.name}</h1>
     <button id="logoutBtn">Logout</button>
@@ -59,7 +59,13 @@ export function printChat() {
       roomNumber.innerText= "";
     }
     })
-  
+    const logoutBtn = document.querySelector('#logoutBtn');
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('user');
+      game.innerHTML = '';
+      checkLogin();
+    });
+
     socket.on('chat', (arg) => {
       console.log('chat', arg);
     });

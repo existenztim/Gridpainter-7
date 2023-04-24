@@ -108,13 +108,14 @@ body {
     background-color: #CCE5FF; /* light blue */
     color: #000; /* black */
     margin: 2rem 0;
+    position: relative;
     animation: 1s ease-in 0s 1 slidein;
   }
 
   .sent span, .received span {
     color: #fff;
     transform: translateY(-140%);
-    position: fixed;
+    position:absolute;
     background-color: #6576c2;
     border-radius: 5px;
     font-size: 0.8rem;

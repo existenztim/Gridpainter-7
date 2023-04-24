@@ -1,17 +1,15 @@
 import './style.scss';
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
-import { printChat } from './script/printChat';
+import { printChat } from './script/handleChat';
 
 const socket = io('http://localhost:3000');
 
-const app = document.querySelector('#app');
+
 const game = document.querySelector('#game');
-let user = JSON.parse(localStorage.getItem('user'));
 const BASE_URL = 'http://localhost:3000';
 
-function checkLogin() {
-  user = JSON.parse(localStorage.getItem('user'));
-  if (user) {
+export function checkLogin() {
+  if (localStorage.getItem("user")) {
     printChat();
     printGame();
   } else {
@@ -50,18 +48,10 @@ function printGame() {
   });
 
   createGrid();
-
- 
-
-  const logoutBtn = document.querySelector('#logoutBtn');
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('user');
-    game.innerHTML = '';
-    checkLogin();
-  });
 }
 
 function printLogin() {
+  const app = document.querySelector('#app');
   app.innerHTML = /*html*/`
    <div id="loginContainer">
     <form id="loginUser">
