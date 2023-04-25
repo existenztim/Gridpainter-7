@@ -34,7 +34,27 @@ export function printChat() {
     const selectedRom = document.querySelector("#roomSelect"); 
     const chatFeedBack = document.querySelector("#chatFeedback");
     const roomNumber = document.querySelector("#roomNumber");
-  
+    
+    input.addEventListener('input', (e) => {
+      const value = e.target.value;
+      const regex1 = /<3/g;
+      const regex2 = /:\)/g;
+      const regex3 = /:D/g;
+      const regex4 = /:\(/g;
+      if (regex1.test(value)) {
+        e.target.value = value.replace(regex1, '❤️');
+      }
+      if (regex2.test(value)) {
+        e.target.value = value.replace(regex2, '😊');
+      }
+      if (regex3.test(value)) {
+        e.target.value = value.replace(regex3, '😁');
+      }
+      if (regex4.test(value)) {
+        e.target.value = value.replace(regex4, '😞');
+      }
+    });
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
      const room = selectedRom.value;
@@ -69,7 +89,7 @@ export function printChat() {
     socket.on('chat', (arg) => {
       console.log('chat', arg);
     });
-    // ${text.replace(/a/, '😊')
+
     socket.on('chat message', function (message) {
       let [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
