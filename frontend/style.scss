@@ -34,14 +34,18 @@ body {
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(15, 20px);
-  grid-gap: 2px;
+  grid-template-columns: repeat(15, 30px);
+  grid-gap: 3px;
   padding: 4px;
   max-width: fit-content;
+  margin: 10px auto;
+  height: auto;
+  outline: 10px solid black;
+  outline-style: ridge;
 
   .cell {
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     border: 1px solid black;
   }
 }
