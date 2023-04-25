@@ -69,7 +69,7 @@ export function printChat() {
     socket.on('chat', (arg) => {
       console.log('chat', arg);
     });
-    
+    // ${text.replace(/a/, '😊')
     socket.on('chat message', function (message) {
       let [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
@@ -85,10 +85,12 @@ export function printChat() {
       messages.appendChild(chatTextLi);
     });
 
-    socket.on("join-room", function (room) { 
-      const joinMessageLi = document.createElement('li');
-      joinMessageLi.innerText = `You have joined ${room}, say hello!`;
-      joinMessageLi.classList.add('sent');
-      messages.appendChild(joinMessageLi);
-    })
+    //detta nedan skickar endast ett meddelande till användaren som ansluter och berättar vilket rum de befinner sig i
+    
+    // socket.on("join-room", function (room) { 
+    //   const joinMessageLi = document.createElement('li');
+    //   joinMessageLi.innerText = `You have joined ${room}, say hello!`;
+    //   joinMessageLi.classList.add('sent');
+    //   messages.appendChild(joinMessageLi);
+    // })
   }

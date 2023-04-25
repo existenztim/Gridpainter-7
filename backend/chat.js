@@ -7,7 +7,7 @@ io.on('connection', (socket) => {
    socket.on("join-room", (room, username, message) => {
       socket.emit('join-room', room, username); 
       socket.join(room);
-      io.to(room).emit('chat message', `${username} joined the chat!`); 
+      io.to(room).emit('chat message', `${username}: I just joined this chat room, say hello!`); 
     })
   });
 }
