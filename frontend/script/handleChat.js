@@ -1,17 +1,16 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
 
-
 export function printChat() {
-    const socket = io('http://localhost:3000');
+    const socket = io('http://localhost:3003');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
     <h1>Welcome, ${user.name}</h1>
-    <button id="logoutBtn">Logout</button>
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
     <ul class="messages"></ul>
+    <button id="logoutBtn">Logout</button>
     <form class="form">
     <input class="input" type="text">
     <select name="rooms" id="roomSelect">
@@ -21,7 +20,7 @@ export function printChat() {
       <option value="room3">Room 3</option>
     </option>
     </select>
-    <button class="roomButton">Join Room</button>
+    <button class="roomButton">Join chatroom</button>
     <button class="submitButton">Send</button>
     </form>
    
@@ -74,7 +73,15 @@ export function printChat() {
     socket.on('chat message', function (message) {
       const [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
-      chatTextLi.innerHTML = `<span>11:00 </span><strong>${username}:</strong> ${text}`;
+      const time = new Date();
+      const timeOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      };
+      const formattedTime = time.toLocaleTimeString("en-US", timeOptions);
+      chatTextLi.innerHTML = `<strong>${username} : </strong> ${text}<br> <span>${formattedTime}</span>`;
+      
   
       if (username === user.name) {
         chatTextLi.classList.add('sent');
