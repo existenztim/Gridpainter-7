@@ -54,8 +54,7 @@ export function printChat() {
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
-      socket.emit("join-room", room)
-      console.log(`joined room :${room}`);
+      socket.emit("join-room", room, user.name);
     } else {
       roomNumber.innerText= "";
     }
@@ -72,7 +71,7 @@ export function printChat() {
     });
     
     socket.on('chat message', function (message) {
-      const [username, text] = message.split(': ');
+      let [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
       const timestap = moment(document.createDate).format("HH:mm:ss")
       chatTextLi.innerHTML = `<span>${timestap} </span><strong>${username}:</strong> ${text}`;
@@ -86,10 +85,10 @@ export function printChat() {
       messages.appendChild(chatTextLi);
     });
 
-    socket.on("join-room", function (room) { // <-- add this block
-  const joinMessageLi = document.createElement('li');
-  joinMessageLi.innerText = `${user.name} has joined the room!`;
-  joinMessageLi.classList.add('sent');
-  messages.appendChild(joinMessageLi);
-})
+    socket.on("join-room", function (room) { 
+      const joinMessageLi = document.createElement('li');
+      joinMessageLi.innerText = `You have joined ${room}, say hello!`;
+      joinMessageLi.classList.add('sent');
+      messages.appendChild(joinMessageLi);
+    })
   }
