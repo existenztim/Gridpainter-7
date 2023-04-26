@@ -2,7 +2,7 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
 
 export function printChat() {
-    const socket = io('http://localhost:3003');
+    const socket = io('http://localhost:3000');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `

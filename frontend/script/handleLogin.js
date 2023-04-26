@@ -34,7 +34,7 @@ export function printLogin() {
   
   function loginUser(e) {
     e.preventDefault();
-    const BASE_URL = 'http://localhost:3003';
+    const BASE_URL = 'http://localhost:3000';
     const name = document.querySelector('#loginUsername').value;
     const password = document.querySelector('#loginPassword').value;
   
@@ -68,7 +68,7 @@ export function printLogin() {
   }
   
   function createUser(e) {
-    const BASE_URL = 'http://localhost:3003';
+    const BASE_URL = 'http://localhost:3000';
     e.preventDefault();
   
     const name = document.querySelector('#createUsername').value;
