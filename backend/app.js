@@ -9,8 +9,10 @@ app.use(cors());
 const indexRouter = require('./routes/index');
 const referenceImageRouter = require('./routes/referenceImage');
 const usersRouter = require('./routes/users');
-var bodyParser = require('body-parser');
 const ReferenceImage = require('./models/referenceImage');
+const chatHandler = require('./chat');
+const bodyParser = require('body-parser');
+
 let grid = [];
 let connectedUsers = {};
 const colors = ['red', 'blue', 'yellow', 'green'];
@@ -78,7 +80,7 @@ io.on('connection', (socket) => {
       return;
     }
   }
-
+ 
   socket.on('join', () => {
     joinRequest();
     // connectedUsers[socket.id] = user.name;
@@ -131,20 +133,7 @@ io.on('connection', (socket) => {
   });
 });
 
-io.on('connection', (socket) => {
-
-  
-  socket.on('chat message', (message, username, room) => {
-    io.to(room).emit('chat message', `${username}: ${message}`);
-    console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
-  });
-  socket.on("join-room", room => {
-    socket.join(room);
-    console.log(room);
-  })
-  //io.emit('gridData', { grid });
-  //io.emit('updateUsersList', { users: Object.values(connectedUsers) });
-});
+chatHandler(io);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
