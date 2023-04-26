@@ -38,6 +38,10 @@ body {
   border: 1px solid black;
 }
 
+.redNumbers {
+  color: red;
+}
+
 .messages {
   list-style: none;
   margin: 0 auto;
