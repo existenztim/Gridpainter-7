@@ -10,10 +10,6 @@ export function printGame() {
     <table id="grid" border="1"></table>
     <canvas id='referenceCanvas' width='150' height='150'></canvas>`;
   
-    const joinButton = document.getElementById('joinButton');
-    const exitButton = document.createElement('button');
-    exitButton.innerText = 'Exit game';
-  
     socket.on('gridData', ({ grid }) => {
       for (let y = 0; y < 15; y++) {
         for (let x = 0; x < 15; x++) {
@@ -24,15 +20,32 @@ export function printGame() {
       }
     });
   
+    const joinButton = document.getElementById('joinButton');
     joinButton.addEventListener('click', () => {
       socket.emit('join');
       joinButton.remove();
-      game.prepend(exitButton);
-      exitButton.addEventListener('click', () => {
+      const endGameButton = document.createElement('button');
+      endGameButton.id = 'endGameButton';
+      endGameButton.innerText = 'End game';
+      game.prepend(endGameButton);
+      endGameButton.addEventListener('click', () => {
+        socket.emit('endGame');
         socket.emit('exitGame');
-        exitButton.remove();
-        game.prepend(joinButton);
       });
+    });
+
+    socket.on('disableJoinButton', () => {
+      joinButton.disabled = true;
+    });
+
+    socket.on('reloadButtons', () => {
+      const endGameButton = document.getElementById('endGameButton');
+      if (endGameButton) {
+        endGameButton.remove();
+      }
+
+      game.prepend(joinButton)
+      joinButton.disabled = false;
     });
 
     const saveButton = document.getElementById('saveReferenceButton');
@@ -52,27 +65,20 @@ export function printGame() {
     createGrid();
   
     let referenceImage;
-
-    function fetchReferenceImage() {
-      return fetch('http://localhost:3000/referenceImage/randomGameImage')
-        .then(response => response.json())
-        .then(data => {
-          referenceImage = data;
-          const referenceCanvas = document.getElementById('referenceCanvas');
-          const referenceContext = referenceCanvas.getContext('2d');
-          for (let y = 0; y < 15; y++) {
-            for (let x = 0; x < 15; x++) {
-              const cell = referenceImage.grid[y][x];
-              referenceContext.fillStyle = cell;
-              referenceContext.fillRect(y * 10, x * 10, 10, 10);
-            }
-          }
-        })
-        .catch(error => console.error(error));
-    }
-    
-    fetchReferenceImage();
-
+  
+    socket.on('referenceImageData', ({ referenceImage: data }) => {
+      referenceImage = data;
+      const referenceCanvas = document.getElementById('referenceCanvas');
+      const referenceContext = referenceCanvas.getContext('2d');
+      for (let y = 0; y < 15; y++) {
+        for (let x = 0; x < 15; x++) {
+          const cell = referenceImage.grid[y][x];
+          referenceContext.fillStyle = cell;
+          referenceContext.fillRect(y * 10, x * 10, 10, 10);
+        }
+      }
+    });
+  
     const resultsButton = document.getElementById('resultButton');
     resultsButton.addEventListener('click', () => {
       const grid = [];
@@ -80,7 +86,7 @@ export function printGame() {
       cells.forEach(cell => {
         grid.push(cell.style.backgroundColor);
       });
-    
+  
       if (referenceImage !== null) {
         const paintedGrid = JSON.stringify(grid);
         const referenceGrid = JSON.stringify(referenceImage.grid);
