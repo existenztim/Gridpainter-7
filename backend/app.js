@@ -7,7 +7,9 @@ require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
 const indexRouter = require('./routes/index');
+const referenceImageRouter = require('./routes/referenceImage');
 const usersRouter = require('./routes/users');
+const ReferenceImage = require('./models/referenceImage');
 const chatHandler = require('./chat');
 const bodyParser = require('body-parser');
 
@@ -41,9 +43,10 @@ for (let y = 0; y < 15; y++) {
   grid.push(row);
 }
 
+let joinButtonCount = 0;
 
 io.on('connection', (socket) => {
-  function joinRequest() {
+  async function joinRequest() {
     if (Object.keys(connectedUsers).length <= 4) {
       const availableColors = colors.filter(
         (color) => !Object.values(connectedUsers).includes(color)
@@ -53,8 +56,27 @@ io.on('connection', (socket) => {
       console.log('new user connected:', socket.id, 'with color:', color);
       socket.emit('joinResponse', { color });
       socket.emit('gridData', { grid });
+
+      joinButtonCount++;
+      if (joinButtonCount === 4) {
+        io.emit('disableJoinButton');
+      }
+
+      if (Object.keys(connectedUsers).length === 1) {
+        try {
+          const response = await fetch('http://localhost:3000/referenceImage/randomGameImage');
+          const referenceImage = await response.json();
+          if (referenceImage !== null) {
+            console.log('Loaded reference image from the database:', referenceImage);
+            io.emit('referenceImageData', { referenceImage });
+          } else {
+            console.log('No reference image found in the database');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
     } else {
-      socket.emit('gameFull');
       return;
     }
   }
@@ -62,6 +84,13 @@ io.on('connection', (socket) => {
   socket.on('join', () => {
     joinRequest();
     // connectedUsers[socket.id] = user.name;
+  });
+
+  socket.on('checkIfUserIsInGame', () => {
+    const userInGame = Object.keys(connectedUsers).includes(socket.id);
+    if (!userInGame) {
+      socket.emit('gameFull');
+    }
   });
   
   socket.on('updateGridCell', ({ x, y, color }) => {
@@ -72,23 +101,44 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('exitGame', () => {
-    if (connectedUsers[socket.id]) {
-      delete connectedUsers[socket.id];
-      io.emit('updateUsersList', { users: Object.values(connectedUsers) });
-      console.log('Någon lämnade');
+  socket.on('endGame', () => {
+    connectedUsers = {};
+    joinButtonCount = 0;
+    grid = [];
+    for (let y = 0; y < 15; y++) {
+      let row = [];
+      for (let x = 0; x < 15; x++) {
+        row.push('white');
+      }
+      grid.push(row);
     }
-    socket.on('chat', (argument) => {
-      console.log('incoming chat', argument);
-      io.emit('chat', argument);
+    io.emit('gridData', { grid });
+    io.emit('reloadButtons');
+    io.emit('removeMessage');
+    io.emit('clearCanvas');
+  });
+
+  socket.on('saveReferenceImage', ({ grid }) => {
+    const referenceImage = new ReferenceImage({
+      grid,
+      createdOn: Date.now(),
+    });
+    referenceImage.save()
+    .then((referenceImage) => {
+      console.log('Reference image saved to MongoDB: ', referenceImage);
+    })
+    .catch((err) => {
+      console.error(err);
     });
   });
 });
+
 chatHandler(io);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/', indexRouter);
+app.use('/referenceImage', referenceImageRouter);
 app.use('/users', usersRouter);
 
 server.listen(3000);
