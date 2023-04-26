@@ -1,5 +1,5 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:3003');
 
 export function printGame() {
     const game = document.querySelector('#game');
