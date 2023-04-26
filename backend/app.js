@@ -113,6 +113,7 @@ io.on('connection', (socket) => {
     io.emit('gridData', { grid });
     io.emit('reloadButtons');
     io.emit('removeMessage');
+    io.emit('clearCanvas');
   });
 
   socket.on('saveReferenceImage', ({ grid }) => {

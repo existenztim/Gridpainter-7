@@ -148,3 +148,9 @@ export function printGame() {
       fullGameMessage.remove();
     }
   });
+
+  socket.on('clearCanvas', () => {
+    const referenceCanvas = document.getElementById('referenceCanvas');
+    const referenceContext = referenceCanvas.getContext('2d');
+    referenceContext.clearRect(0, 0, referenceCanvas.width, referenceCanvas.height);
+  })
