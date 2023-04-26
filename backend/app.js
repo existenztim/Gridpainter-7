@@ -7,8 +7,10 @@ require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
 const indexRouter = require('./routes/index');
+const referenceImageRouter = require('./routes/referenceImage');
 const usersRouter = require('./routes/users');
 var bodyParser = require('body-parser');
+const ReferenceImage = require('./models/referenceImage');
 let grid = [];
 let connectedUsers = {};
 const colors = ['red', 'blue', 'yellow', 'green'];
@@ -81,7 +83,22 @@ io.on('connection', (socket) => {
       io.emit('chat', argument);
     });
   });
+
+  socket.on('saveReferenceImage', ({ grid }) => {
+    const referenceImage = new ReferenceImage({
+      grid,
+      createdOn: Date.now(),
+    });
+    referenceImage.save()
+    .then((referenceImage) => {
+      console.log('Reference image saved to MongoDB: ', referenceImage);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  });
 });
+
 io.on('connection', (socket) => {
 
   
@@ -100,6 +117,7 @@ io.on('connection', (socket) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/', indexRouter);
+app.use('/referenceImage', referenceImageRouter);
 app.use('/users', usersRouter);
 
 server.listen(3000);
