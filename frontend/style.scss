@@ -34,20 +34,12 @@ body {
         max-width: 80%;
         word-wrap: break-word;
         font-size: 16px;
-    
-        &:nth-child(even) {
-        background-color: #c5e5f5;
-        }
-    
-        &:nth-child(odd) {
-        background-color: #d5f5e3;
-        }
     }
 }
 
 #loginContainer {
   width: 300px;
-  height: 300px;
+  height: 375px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -61,11 +53,7 @@ body {
 
 .form { 
     background: rgba(0, 0, 0, 0.15); 
-    padding: 0.25rem; 
-    position: fixed; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
+    padding: 0.25rem;  
     height: 3rem; 
     box-sizing: border-box; 
     display: flex; 
@@ -101,5 +89,48 @@ body {
       &:focus {
         outline: none;
       } 
+    }
+  }
+
+  .messages {
+    height: 300px;
+    overflow: scroll;
+  }
+
+  .sent {
+    background-color: #DCF8C6; /* light green */
+    color: #000; /* black */
+    margin: 2rem 0;
+    animation: 1s ease-in 0s 1 slidein;
+  }
+  
+  .received {
+    background-color: #CCE5FF; /* light blue */
+    color: #000; /* black */
+    margin: 2rem 0;
+    position: relative;
+    animation: 1s ease-in 0s 1 slidein;
+  }
+
+  .sent span, .received span {
+    color: #fff;
+    transform: translateY(-140%);
+    position:absolute;
+    background-color: #6576c2;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    padding: 2px;
+    
+  }
+  
+  @keyframes slidein {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0%);
     }
   }
