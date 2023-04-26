@@ -91,5 +91,5 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-server.listen(3000);
+server.listen(3003);
 module.exports = { app: app, server: server };

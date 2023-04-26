@@ -1,41 +1,116 @@
+$primary-color: #333;
+$secondary-color: #fff;
+$color-dark-blue: #6576c2;
+
+@mixin button-style {
+  background-color: $color-dark-blue;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.5rem 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: $secondary-color;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 h1 {
   text-align: center;
 }
 
-body { 
-    margin: 0; 
-    padding-bottom: 3rem; 
-    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+.gameName {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 3rem;
+  color:#6576c2;
+}
+
+body {
+  margin: 0;
+  padding-bottom: 3rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(15, 20px);
-  grid-gap: 2px;
+  grid-template-columns: repeat(15, 30px);
+  grid-gap: 3px;
   padding: 4px;
   max-width: fit-content;
-}
+  margin: 10px auto;
+  height: auto;
+  outline: 10px solid black;
+  outline-style: ridge;
 
-.cell {
-  height: 20px;
-  width: 20px;
-  border: 1px solid black;
+  .cell {
+    height: 30px;
+    width: 30px;
+    border: 1px solid black;
+  }
 }
 
 .messages {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    
-    li {
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 20px;
-        max-width: 80%;
-        word-wrap: break-word;
-        font-size: 16px;
-    }
+  list-style: none;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: 70vw;
+  width: 100%;
+  outline: 2px solid black;
 }
+
+.messages li {
+  display: flex;
+  justify-content: flex-start;
+  margin: 20px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  word-wrap: break-word;
+  font-size: 16px;
+  animation: 1s ease-in 0s 1 slidein;
+  position: relative;
+}
+
+span {
+  position: absolute; 
+  top: 30px;
+  border-radius: 5px;
+  animation: none;
+  margin: 10px 0;
+  color: grey;
+}
+
+  .sent {
+    background-color: #DCF8C6; /* light green */
+    color: #000; /* black */
+    margin: 2rem 0;
+    position: relative;
+    align-self: flex-start;
+  }
+
+  .received {
+    background-color: #CCE5FF; /* light blue */
+    color: #000; /* black */
+    margin: 2rem 0;
+    position: relative;
+    align-self: flex-end;
+  }
+
+  @keyframes slidein {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+
 
 #loginContainer {
   width: 300px;
@@ -49,88 +124,32 @@ body {
   border: 1px solid black;
   border-radius: 20px;
   box-shadow: 1px 1px 2px 1px grey;
-}
 
-.form { 
-    background: rgba(0, 0, 0, 0.15); 
-    padding: 0.25rem;  
-    height: 3rem; 
-    box-sizing: border-box; 
-    display: flex; 
-    align-items: center; 
+  .form {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    height: 3rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
     backdrop-filter: blur(10px);
-  
-    button { 
-      background-color: #333; 
-      border: none; 
-      padding: 0 1rem; 
-      margin: 0 0.25rem; 
-      border-radius: 3px; 
-      outline: none; 
-      color: #fff;
-      font-size: 16px;
-      line-height: 1.5;
-      white-space: nowrap;
-      cursor: pointer;
-    } 
-  
+
     input {
-      border: none; 
-      padding: 10px; 
-      flex-grow: 1; 
-      border-radius: 20px; 
+      border: none;
+      padding: 10px;
+      flex-grow: 1;
+      border-radius: 20px;
       margin: 0.25rem;
       background-color: #fff;
       font-size: 16px;
-      line-height: 1.5;
-      box-sizing: border-box;
-      outline: none;
-  
-      &:focus {
-        outline: none;
-      } 
     }
   }
+}
 
-  .messages {
-    height: 300px;
-    overflow: scroll;
-  }
+button {
+  @include button-style;
+}
 
-  .sent {
-    background-color: #DCF8C6; /* light green */
-    color: #000; /* black */
-    margin: 2rem 0;
-    animation: 0.5s ease-in 0s 1 slidein;
-  }
-  
-  .received {
-    background-color: #CCE5FF; /* light blue */
-    color: #000; /* black */
-    margin: 2rem 0;
-    position: relative;
-    animation: 0.5s ease-in 0s 1 slidein;
-  }
-
-  .sent span, .received span {
-    color: #fff;
-    transform: translateY(-140%);
-    position:absolute;
-    background-color: #6576c2;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    padding: 2px;
-    
-  }
-  
-  @keyframes slidein {
-    from {
-      opacity: 0;
-      transform: translateY(-100%);
-    }
-  
-    to {
-      opacity: 1;
-      transform: translateY(0%);
-    }
-  }
+#chatFeedback, #roomNumber {
+  text-align: center;
+}
