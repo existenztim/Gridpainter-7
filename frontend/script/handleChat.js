@@ -2,7 +2,7 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
 
 export function printChat() {
-    const socket = io('http://localhost:3003');
+    const socket = io('http://localhost:3000');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
@@ -33,7 +33,27 @@ export function printChat() {
     const selectedRom = document.querySelector("#roomSelect"); 
     const chatFeedBack = document.querySelector("#chatFeedback");
     const roomNumber = document.querySelector("#roomNumber");
-  
+    
+    input.addEventListener('input', (e) => {
+      const value = e.target.value;
+      const regex1 = /<3/g;
+      const regex2 = /:\)/g;
+      const regex3 = /:D/g;
+      const regex4 = /:\(/g;
+      if (regex1.test(value)) {
+        e.target.value = value.replace(regex1, '❤️');
+      }
+      if (regex2.test(value)) {
+        e.target.value = value.replace(regex2, '😊');
+      }
+      if (regex3.test(value)) {
+        e.target.value = value.replace(regex3, '😁');
+      }
+      if (regex4.test(value)) {
+        e.target.value = value.replace(regex4, '😞');
+      }
+    });
+
     form.addEventListener('submit', function (event) {
       event.preventDefault();
      const room = selectedRom.value;
@@ -47,13 +67,13 @@ export function printChat() {
       }
     });
   
-    joinRoomBtn.addEventListener("click", () => {
+    joinRoomBtn.addEventListener("click", (event) => {
+      event.preventDefault();
       const room = selectedRom.value;
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
-      socket.emit("join-room", room)
-      console.log(`joined room :${room}`);
+      socket.emit("join-room", room, user.name);
     } else {
       roomNumber.innerText= "";
     }
@@ -68,10 +88,9 @@ export function printChat() {
     socket.on('chat', (arg) => {
       console.log('chat', arg);
     });
-    
-  
+
     socket.on('chat message', function (message) {
-      const [username, text] = message.split(': ');
+      let [username, text] = message.split(': ');
       const chatTextLi = document.createElement('li');
       const time = new Date();
       const timeOptions = {
@@ -91,4 +110,13 @@ export function printChat() {
   
       messages.appendChild(chatTextLi);
     });
+
+    //detta nedan skickar endast ett meddelande till användaren som ansluter och berättar vilket rum de befinner sig i
+    
+    // socket.on("join-room", function (room) { 
+    //   const joinMessageLi = document.createElement('li');
+    //   joinMessageLi.innerText = `You have joined ${room}, say hello!`;
+    //   joinMessageLi.classList.add('sent');
+    //   messages.appendChild(joinMessageLi);
+    // })
   }
