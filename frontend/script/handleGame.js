@@ -30,6 +30,7 @@ export function printGame() {
     endGameButton.innerText = 'End game';
     game.prepend(endGameButton);
     endGameButton.addEventListener('click', () => {
+      endGameButton.disabled = true;
       socket.emit('endGame');
     });
   });
@@ -76,47 +77,46 @@ export function printGame() {
   });
 
   createGrid();
-
-  let referenceImage;
-
-  socket.on('referenceImageData', ({ referenceImage: data }) => {
-    referenceImage = data;
-    const referenceCanvas = document.getElementById('referenceCanvas');
-    const referenceContext = referenceCanvas.getContext('2d');
-    for (let y = 0; y < 15; y++) {
-      for (let x = 0; x < 15; x++) {
-        const cell = referenceImage.grid[y][x];
-        referenceContext.fillStyle = cell;
-        referenceContext.fillRect(y * 10, x * 10, 10, 10);
-      }
-    }
-  });
-
-  const resultsButton = document.getElementById('resultButton');
-  resultsButton.addEventListener('click', () => {
-    const grid = [];
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach(cell => {
-      grid.push(cell.style.backgroundColor);
-    });
-
-    if (referenceImage !== null) {
-      const paintedGrid = JSON.stringify(grid);
-      const referenceGrid = JSON.stringify(referenceImage.grid);
-      if (paintedGrid === referenceGrid) {
-        console.log("100% It's a perfect match!");
-      } else {
-        const matchingCells = grid.reduce((acc, cell, index) => {
-          return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
-        }, 0);
-        const accuracy = (matchingCells / (15 * 15)) * 100;
-        console.log(`Accuracy: ${accuracy}%`);
-      }
-    } else {
-      console.log('Reference image not found');
-    }
-  });
 }
+
+let referenceImage;
+
+socket.on('referenceImageData', ({ referenceImage: data }) => {
+  referenceImage = data;
+  const referenceCanvas = document.getElementById('referenceCanvas');
+  const referenceContext = referenceCanvas.getContext('2d');
+  for (let y = 0; y < 15; y++) {
+    for (let x = 0; x < 15; x++) {
+      const cell = referenceImage.grid[y][x];
+      referenceContext.fillStyle = cell;
+      referenceContext.fillRect(y * 10, x * 10, 10, 10);
+    }
+  }
+});
+
+function printResults() {
+  const grid = [];
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => {
+    grid.push(cell.style.backgroundColor);
+  });
+
+  if (referenceImage !== null) {
+    const paintedGrid = JSON.stringify(grid);
+    const referenceGrid = JSON.stringify(referenceImage.grid);
+    if (paintedGrid === referenceGrid) {
+      console.log("100% It's a perfect match!");
+    } else {
+      const matchingCells = grid.reduce((acc, cell, index) => {
+        return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
+      }, 0);
+      const accuracy = (matchingCells / (15 * 15)) * 100;
+      console.log(`Accuracy: ${accuracy}%`);
+    }
+  } else {
+    console.log('Reference image not found');
+  }
+};
 
 const connectedUsers = {};
 
@@ -186,4 +186,50 @@ socket.on('startTimer', () => {
       clearInterval(myInterval);
       timer.innerHTML = "";
   })
+});
+
+
+socket.on('onePlayerHasFinished', () => {
+  const gridTable = document.getElementById('grid');
+  const playersFinishedMessage = document.getElementById('playersFinished');
+  if (playersFinishedMessage) {
+    playersFinishedMessage.remove();
+  }
+  const message = document.createElement('h2');
+  message.id = 'playersFinished'
+  message.innerText = "One player has finished the game. Click 'End game' when you're ready!";
+  gridTable.before(message);
+});
+
+socket.on('twoPlayersHaveFinished', () => {
+  const gridTable = document.getElementById('grid');
+  const playersFinishedMessage = document.getElementById('playersFinished');
+  if (playersFinishedMessage) {
+    playersFinishedMessage.remove();
+  }
+  const message = document.createElement('h2');
+  message.id = 'playersFinished'
+  message.innerText = "Two players have finished the game. Click 'End game' when you're ready!";
+  gridTable.before(message);
+});
+
+socket.on('threePlayersHaveFinished', () => {
+  const gridTable = document.getElementById('grid');
+  const playersFinishedMessage = document.getElementById('playersFinished');
+  if (playersFinishedMessage) {
+    playersFinishedMessage.remove();
+  }
+  const message = document.createElement('h2');
+  message.id = 'playersFinished'
+  message.innerText = "Three players have finished the game. Click 'End game' when you're ready!";
+  gridTable.before(message);
+});
+
+socket.on('fourPlayersHaveFinished', () => {
+  const playersFinishedMessage = document.getElementById('playersFinished');
+  if (playersFinishedMessage) {
+    playersFinishedMessage.remove();
+  }
+  printResults();
+  socket.emit('clearGame');
 });

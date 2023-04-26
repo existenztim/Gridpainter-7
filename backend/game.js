@@ -2,6 +2,7 @@ const ReferenceImage = require('./models/referenceImage');
 let grid = [];
 let connectedUsers = {};
 let joinButtonCount = 0;
+let endGameButtonCount = 0;
 const colors = ['red', 'blue', 'yellow', 'green'];
 
 function gameHandler(io){
@@ -71,8 +72,28 @@ function gameHandler(io){
   });
     
   socket.on('endGame', () => {
+    endGameButtonCount++;
+      if (endGameButtonCount === 1) {
+        io.emit('onePlayerHasFinished');
+      }
+
+      if (endGameButtonCount === 2) {
+        io.emit('twoPlayersHaveFinished');
+      }
+
+      if (endGameButtonCount === 3) {
+        io.emit('threePlayersHaveFinished');
+      }
+
+      if (endGameButtonCount === 4) {
+        io.emit('fourPlayersHaveFinished');
+      }
+  });
+
+  socket.on('clearGame', () => {
     connectedUsers = {};
     joinButtonCount = 0;
+    endGameButtonCount = 0;
     grid = [];
     for (let y = 0; y < 15; y++) {
       let row = [];
@@ -86,7 +107,7 @@ function gameHandler(io){
     io.emit('removeMessage');
     io.emit('clearCanvas');
     io.emit('stopTimer');
-  });
+  })
     
   socket.on('saveReferenceImage', ({ grid }) => {
     const referenceImage = new ReferenceImage({
