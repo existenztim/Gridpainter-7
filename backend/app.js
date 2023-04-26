@@ -75,7 +75,6 @@ io.on('connection', (socket) => {
         }
       }
     } else {
-      socket.emit('gameFull');
       return;
     }
   }
@@ -84,6 +83,13 @@ io.on('connection', (socket) => {
     joinRequest();
     // connectedUsers[socket.id] = user.name;
   });
+
+  socket.on('checkIfUserIsInGame', () => {
+    const userInGame = Object.keys(connectedUsers).includes(socket.id);
+    if (!userInGame) {
+      socket.emit('gameFull');
+    }
+  });
   
   socket.on('updateGridCell', ({ x, y, color }) => {
     if (connectedUsers[socket.id]) {
@@ -91,18 +97,6 @@ io.on('connection', (socket) => {
       io.emit('updateGridCell', { x, y, color: connectedUsers[socket.id] });
       io.emit('gridData', { grid });
     }
-  });
-
-  socket.on('exitGame', () => {
-    if (connectedUsers[socket.id]) {
-      delete connectedUsers[socket.id];
-      io.emit('updateUsersList', { users: Object.values(connectedUsers) });
-      console.log('Någon lämnade');
-    }
-    socket.on('chat', (argument) => {
-      console.log('incoming chat', argument);
-      io.emit('chat', argument);
-    });
   });
 
   socket.on('endGame', () => {
@@ -117,8 +111,8 @@ io.on('connection', (socket) => {
       grid.push(row);
     }
     io.emit('gridData', { grid });
-    io.emit('updateUsersList', { users: Object.values(connectedUsers) });
     io.emit('reloadButtons');
+    io.emit('removeMessage');
   });
 
   socket.on('saveReferenceImage', ({ grid }) => {

@@ -30,12 +30,24 @@ export function printGame() {
       game.prepend(endGameButton);
       endGameButton.addEventListener('click', () => {
         socket.emit('endGame');
-        socket.emit('exitGame');
       });
     });
 
     socket.on('disableJoinButton', () => {
       joinButton.disabled = true;
+
+      socket.emit('checkIfUserIsInGame');
+      socket.on('gameFull', () => {
+        const gridTable = document.getElementById('grid');
+        const fullGameMessage = document.getElementById('fullGameMessage');
+        if (fullGameMessage) {
+          fullGameMessage.remove();
+        }
+        const message = document.createElement('h2');
+        message.id = 'fullGameMessage'
+        message.innerText = 'The game is currently full';
+        gridTable.before(message);
+      })
     });
 
     socket.on('reloadButtons', () => {
@@ -129,16 +141,10 @@ export function printGame() {
   socket.on('joinResponse', ({ color }) => {
     console.log(`Joined with color ${color}`);
   });
-  
-  socket.on('gameFull', () => {
-    const gridTable = document.getElementById('grid');
-    gridTable.style.pointerEvents = 'none';
-    const message = document.createElement('h2');
-    message.innerText = 'The game is currently full';
-    gridTable.before(message);
-  
-    socket.on('joinResponse', () => {
-      message.remove();
-      gridTable.style.pointerEvents = 'auto';
-    });
+
+  socket.on('removeMessage', () => {
+    const fullGameMessage = document.getElementById('fullGameMessage');
+    if (fullGameMessage) {
+      fullGameMessage.remove();
+    }
   });
