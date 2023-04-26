@@ -73,7 +73,19 @@ export function printChat() {
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
-      socket.emit("join-room", room, user.name);
+      if(!joinRoomBtn.classList.contains("inRoom")){
+        socket.emit("join-room", room, user.name);
+        joinRoomBtn.classList.toggle("inRoom");
+        joinRoomBtn.innerText ="Leave Chatroom";
+        selectedRom.disabled = true;
+      } else {
+        socket.emit("leave-room", room, user.name);
+        joinRoomBtn.classList.toggle("inRoom");
+        joinRoomBtn.innerText ="Join chatroom";
+        roomNumber.innerText= "";
+        selectedRom.disabled = false;
+      }
+     
     } else {
       roomNumber.innerText= "";
     }
