@@ -9,6 +9,7 @@ app.use(cors());
 const indexRouter = require('./routes/index');
 const referenceImageRouter = require('./routes/referenceImage');
 const usersRouter = require('./routes/users');
+const saveLoadRouter = require('./routes/saveLoadImage');
 const chatHandler = require('./chat');
 const gameHandler = require('./game');
 const bodyParser = require('body-parser');
@@ -39,6 +40,6 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/referenceImage', referenceImageRouter);
 app.use('/users', usersRouter);
-
+app.use('/images', saveLoadRouter);
 server.listen(3000);
 module.exports = { app: app, server: server };
