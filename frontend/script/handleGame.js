@@ -1,9 +1,10 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 const socket = io('http://localhost:3000');
-const user = JSON.parse(localStorage.getItem('user'));
+let user = JSON.parse(localStorage.getItem('user'));
 console.log(user);
 
 export function printGame() {
+  user = JSON.parse(localStorage.getItem('user'));
   const game = document.querySelector('#game');
   game.innerHTML += /*html*/ `
   <button id='joinButton'>Join game</button>
@@ -11,6 +12,7 @@ export function printGame() {
   <button id='resultButton'>Show results</button>
   <button id='saveButton'>Save</button>
   <button id='loadButton'>Load</button>
+  <div id="saveLoadMsg"></div>
   <h2 id="timer"></h2>
   <table id="grid" border="1"></table>
   <canvas id='referenceCanvas' width='150' height='150'></canvas>`;
@@ -146,7 +148,10 @@ function saveGrid() {
     }),
   })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      const saveLoadMsg = document.querySelector('#saveLoadMsg');
+      saveLoadMsg.innerHTML = 'Image saved!';
+    });
 }
 
 function loadGrid() {
@@ -158,7 +163,14 @@ function loadGrid() {
     body: JSON.stringify({ userId: user.id }),
   })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      const saveLoadMsg = document.querySelector('#saveLoadMsg');
+      saveLoadMsg.innerHTML = '';
+      data.map((img) => {
+        saveLoadMsg.innerHTML += `
+        <button>${img.createdOn}</button>`;
+      });
+    });
 }
 
 const connectedUsers = {};
