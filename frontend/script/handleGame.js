@@ -7,7 +7,7 @@ export function printGame() {
   <button id='joinButton'>Join game</button>
   <button id='saveReferenceButton'>Save reference image</button>
   <button id='resultButton'>Show results</button>
-  <h2 id="timer"></h2>
+  <h3 id="timer"></h3>
   <table id="grid" border="1"></table>
   <canvas id='referenceCanvas' width='150' height='150'></canvas>`;
 
@@ -45,12 +45,22 @@ export function printGame() {
       if (fullGameMessage) {
         fullGameMessage.remove();
       }
-      const message = document.createElement('h2');
+      const message = document.createElement('h3');
       message.id = 'fullGameMessage'
       message.innerText = 'The game is currently full';
       gridTable.before(message);
     })
   });
+
+  socket.on('disableEndGameButton', () => {
+    const endGameButton = document.getElementById('endGameButton');
+    endGameButton.disabled = true;
+  })
+
+  socket.on('enableEndGameButton', () => {
+    const endGameButton = document.getElementById('endGameButton');
+    endGameButton.disabled = false;
+  })
 
   socket.on('reloadButtons', () => {
     const endGameButton = document.getElementById('endGameButton');
@@ -102,17 +112,20 @@ function printResults() {
   });
 
   if (referenceImage !== null) {
-    const paintedGrid = JSON.stringify(grid);
-    const referenceGrid = JSON.stringify(referenceImage.grid);
-    if (paintedGrid === referenceGrid) {
-      console.log("100% It's a perfect match!");
+    const matchingCells = grid.reduce((acc, cell, index) => {
+      return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
+    }, 0);
+    const accuracy = Math.round((matchingCells / (15 * 15)) * 100);
+
+    const gridTable = document.getElementById('grid');
+    const message = document.createElement('h3');
+    message.id = 'resultMessage'
+    if (accuracy === 100) {
+      message.innerText = `And the results are in:\n100% It's a perfect match!\n\nClick 'Join game' to start a new game!`;
     } else {
-      const matchingCells = grid.reduce((acc, cell, index) => {
-        return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
-      }, 0);
-      const accuracy = (matchingCells / (15 * 15)) * 100;
-      console.log(`Accuracy: ${accuracy}%`);
+      message.innerText = `And the results are in:\nAccuracy: ${accuracy}%\n\nClick 'Join game' to start a new game!`;
     }
+    gridTable.before(message);
   } else {
     console.log('Reference image not found');
   }
@@ -188,41 +201,76 @@ socket.on('startTimer', () => {
   })
 });
 
+socket.on('onePlayerJoined', () => {
+  const gridTable = document.getElementById('grid');
+  const resultMessage = document.getElementById('resultMessage');
+  if (resultMessage) {
+    resultMessage.remove();
+  }
+  const message = document.createElement('h3');
+  message.id = 'playersJoined'
+  message.innerText = "One player has joined the game. Waiting for three more players to join!";
+  gridTable.before(message);
+
+  socket.on('twoPlayersJoined', () => {
+  const playersJoinedMessage = document.getElementById('playersJoined');
+    if (playersJoinedMessage) {
+      playersJoinedMessage.remove();
+    }
+    message.innerText = "Two players have joined the game. Waiting for two more players to join!";
+    gridTable.before(message);
+  });
+
+  socket.on('threePlayersJoined', () => {
+  const playersJoinedMessage = document.getElementById('playersJoined');
+    if (playersJoinedMessage) {
+      playersJoinedMessage.remove();
+    }
+    message.innerText = "Three players have joined the game. Waiting for one more player to join!";
+    gridTable.before(message);
+  });
+});
+
+socket.on('fourPlayersJoined', () => {
+  const gridTable = document.getElementById('grid');
+  const playersJoinedMessage = document.getElementById('playersJoined');
+  if (playersJoinedMessage) {
+    playersJoinedMessage.remove();
+  }
+  const message = document.createElement('h3');
+  message.id = 'playersJoined'
+  message.innerText = "The game has started. Good luck!";
+  gridTable.before(message);
+});
 
 socket.on('onePlayerHasFinished', () => {
   const gridTable = document.getElementById('grid');
-  const playersFinishedMessage = document.getElementById('playersFinished');
-  if (playersFinishedMessage) {
-    playersFinishedMessage.remove();
+  const playersJoinedMessage = document.getElementById('playersJoined');
+  if (playersJoinedMessage) {
+    playersJoinedMessage.remove();
   }
-  const message = document.createElement('h2');
+  const message = document.createElement('h3');
   message.id = 'playersFinished'
   message.innerText = "One player has finished the game. Click 'End game' when you're ready!";
   gridTable.before(message);
-});
 
-socket.on('twoPlayersHaveFinished', () => {
-  const gridTable = document.getElementById('grid');
+  socket.on('twoPlayersHaveFinished', () => {
   const playersFinishedMessage = document.getElementById('playersFinished');
-  if (playersFinishedMessage) {
-    playersFinishedMessage.remove();
-  }
-  const message = document.createElement('h2');
-  message.id = 'playersFinished'
-  message.innerText = "Two players have finished the game. Click 'End game' when you're ready!";
-  gridTable.before(message);
-});
+    if (playersFinishedMessage) {
+      playersFinishedMessage.remove();
+    }
+    message.innerText = "Two players have finished the game. Click 'End game' when you're ready!";
+    gridTable.before(message);
+  });
 
-socket.on('threePlayersHaveFinished', () => {
-  const gridTable = document.getElementById('grid');
+  socket.on('threePlayersHaveFinished', () => {
   const playersFinishedMessage = document.getElementById('playersFinished');
-  if (playersFinishedMessage) {
-    playersFinishedMessage.remove();
-  }
-  const message = document.createElement('h2');
-  message.id = 'playersFinished'
-  message.innerText = "Three players have finished the game. Click 'End game' when you're ready!";
-  gridTable.before(message);
+    if (playersFinishedMessage) {
+      playersFinishedMessage.remove();
+    }
+    message.innerText = "Three players have finished the game. Click 'End game' when you're ready!";
+    gridTable.before(message);
+  });
 });
 
 socket.on('fourPlayersHaveFinished', () => {

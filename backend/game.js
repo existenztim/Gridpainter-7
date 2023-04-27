@@ -23,8 +23,8 @@ function gameHandler(io){
         const color = availableColors[0];
         connectedUsers[socket.id] = color;
         console.log('new user connected:', socket.id, 'with color:', color);
-        socket.emit('joinResponse', { color });
         socket.emit('gridData', { grid });
+        socket.emit('joinResponse', { color });
 
         joinButtonCount++;
         if (joinButtonCount === 4) {
@@ -32,6 +32,21 @@ function gameHandler(io){
         }
 
         if (Object.keys(connectedUsers).length === 1) {
+          io.emit('onePlayerJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 2) {
+          io.emit('twoPlayersJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 3) {
+          io.emit('threePlayersJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 4) {
           try {
             const response = await fetch('http://localhost:3000/referenceImage/randomGameImage');
             const referenceImage = await response.json();
@@ -45,6 +60,8 @@ function gameHandler(io){
             console.error(error);
           }
           io.emit('startTimer');
+          io.emit('fourPlayersJoined');
+          io.emit('enableEndGameButton');
         }
     } else {
         return;
