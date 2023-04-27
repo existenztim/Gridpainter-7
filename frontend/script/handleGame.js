@@ -13,7 +13,7 @@ export function printGame() {
   <button id='saveButton'>Save</button>
   <button id='loadButton'>Load</button>
   <div id="saveLoadMsg"></div>
-  <h2 id="timer"></h2>
+  <h3 id="timer"></h3>
   <table id="grid" border="1"></table>
   <canvas id='referenceCanvas' width='150' height='150'></canvas>`;
 
@@ -36,6 +36,7 @@ export function printGame() {
     endGameButton.innerText = 'End game';
     game.prepend(endGameButton);
     endGameButton.addEventListener('click', () => {
+      endGameButton.disabled = true;
       socket.emit('endGame');
     });
   });
@@ -55,6 +56,16 @@ export function printGame() {
       message.innerText = 'The game is currently full';
       gridTable.before(message);
     });
+  });
+
+  socket.on('disableEndGameButton', () => {
+    const endGameButton = document.getElementById('endGameButton');
+    endGameButton.disabled = true;
+  });
+
+  socket.on('enableEndGameButton', () => {
+    const endGameButton = document.getElementById('endGameButton');
+    endGameButton.disabled = false;
   });
 
   socket.on('reloadButtons', () => {
@@ -82,118 +93,120 @@ export function printGame() {
   });
 
   createGrid();
-
-  let referenceImage;
-
-  socket.on('referenceImageData', ({ referenceImage: data }) => {
-    referenceImage = data;
-    const referenceCanvas = document.getElementById('referenceCanvas');
-    const referenceContext = referenceCanvas.getContext('2d');
-    for (let y = 0; y < 15; y++) {
-      for (let x = 0; x < 15; x++) {
-        const cell = referenceImage.grid[y][x];
-        referenceContext.fillStyle = cell;
-        referenceContext.fillRect(y * 10, x * 10, 10, 10);
-      }
-    }
-  });
-
-  const resultsButton = document.getElementById('resultButton');
-  resultsButton.addEventListener('click', () => {
-    const grid = [];
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach((cell) => {
-      grid.push(cell.style.backgroundColor);
-    });
-
-    if (referenceImage !== null) {
-      const paintedGrid = JSON.stringify(grid);
-      const referenceGrid = JSON.stringify(referenceImage.grid);
-      if (paintedGrid === referenceGrid) {
-        console.log("100% It's a perfect match!");
-      } else {
-        const matchingCells = grid.reduce((acc, cell, index) => {
-          return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
-        }, 0);
-        const accuracy = (matchingCells / (15 * 15)) * 100;
-        console.log(`Accuracy: ${accuracy}%`);
-      }
-    } else {
-      console.log('Reference image not found');
-    }
-  });
-
-  const saveBtn = document.querySelector('#saveButton');
-  saveBtn.addEventListener('click', saveGrid);
-
-  const loadBtn = document.querySelector('#loadButton');
-  loadBtn.addEventListener('click', loadGrid);
 }
 
-function saveGrid() {
-  const grid = [];
+let referenceImage;
+
+socket.on('referenceImageData', ({ referenceImage: data }) => {
+  referenceImage = data;
+  const referenceCanvas = document.getElementById('referenceCanvas');
+  const referenceContext = referenceCanvas.getContext('2d');
   for (let y = 0; y < 15; y++) {
-    let row = [];
     for (let x = 0; x < 15; x++) {
-      const cell = document.getElementById(`cell-${x}-${y}`);
-      row.push(cell.style.backgroundColor);
+      const cell = referenceImage.grid[y][x];
+      referenceContext.fillStyle = cell;
+      referenceContext.fillRect(y * 10, x * 10, 10, 10);
     }
-    grid.push(row);
+  }
+});
+
+function printResults() {
+  const grid = [];
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell) => {
+    grid.push(cell.style.backgroundColor);
+  });
+
+  if (referenceImage !== null) {
+    const matchingCells = grid.reduce((acc, cell, index) => {
+      return acc + (cell === referenceImage.grid.flat()[index] ? 1 : 0);
+    }, 0);
+    const accuracy = Math.round((matchingCells / (15 * 15)) * 100);
+
+    const gridTable = document.getElementById('grid');
+    const message = document.createElement('h3');
+    message.id = 'resultMessage';
+    if (accuracy === 100) {
+      message.innerText = `And the results are in:\n100% It's a perfect match!\n\nClick 'Join game' to start a new game!`;
+    } else {
+      message.innerText = `And the results are in:\nAccuracy: ${accuracy}%\n\nClick 'Join game' to start a new game!`;
+    }
+    gridTable.before(message);
+  } else {
+    console.log('Reference image not found');
+
+    const saveBtn = document.querySelector('#saveButton');
+    saveBtn.addEventListener('click', saveGrid);
+
+    const loadBtn = document.querySelector('#loadButton');
+    loadBtn.addEventListener('click', loadGrid);
   }
 
-  fetch('http://localhost:3000/images/save', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/JSON',
-    },
-    body: JSON.stringify({
-      userId: user.id,
-      grid,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const saveLoadMsg = document.querySelector('#saveLoadMsg');
-      saveLoadMsg.innerHTML = 'Image saved!';
-    });
-}
+  function saveGrid() {
+    const grid = [];
+    for (let y = 0; y < 15; y++) {
+      let row = [];
+      for (let x = 0; x < 15; x++) {
+        const cell = document.getElementById(`cell-${x}-${y}`);
+        row.push(cell.style.backgroundColor);
+      }
+      grid.push(row);
+    }
 
-function loadGrid() {
-  fetch('http://localhost:3000/images/load', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/JSON',
-    },
-    body: JSON.stringify({ userId: user.id }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const saveLoadMsg = document.querySelector('#saveLoadMsg');
-      saveLoadMsg.innerHTML = '';
-      data.map((img) => {
-        saveLoadMsg.innerHTML += `
-        <button class="loadGridBtn" data-id="${img._id}">${img.createdOn}</button>`;
+    fetch('http://localhost:3000/images/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/JSON',
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        grid,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const saveLoadMsg = document.querySelector('#saveLoadMsg');
+        saveLoadMsg.innerHTML = 'Image saved!';
       });
-      const btns = document.querySelectorAll('.loadGridBtn');
-      btns.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          const image = data.filter(
-            (img) => img._id === e.currentTarget.dataset.id
-          );
-          console.log(image[0]);
-          let referenceImage = image[0];
-          const referenceCanvas = document.getElementById('referenceCanvas');
-          const referenceContext = referenceCanvas.getContext('2d');
-          for (let y = 0; y < 15; y++) {
-            for (let x = 0; x < 15; x++) {
-              const cell = referenceImage.grid[x][y];
-              referenceContext.fillStyle = cell;
-              referenceContext.fillRect(y * 10, x * 10, 10, 10);
+  }
+
+  function loadGrid() {
+    fetch('http://localhost:3000/images/load', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/JSON',
+      },
+      body: JSON.stringify({ userId: user.id }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const saveLoadMsg = document.querySelector('#saveLoadMsg');
+        saveLoadMsg.innerHTML = '';
+        data.map((img) => {
+          saveLoadMsg.innerHTML += `
+        <button class="loadGridBtn" data-id="${img._id}">${img.createdOn}</button>`;
+        });
+        const btns = document.querySelectorAll('.loadGridBtn');
+        btns.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const image = data.filter(
+              (img) => img._id === e.currentTarget.dataset.id
+            );
+            console.log(image[0]);
+            let referenceImage = image[0];
+            const referenceCanvas = document.getElementById('referenceCanvas');
+            const referenceContext = referenceCanvas.getContext('2d');
+            for (let y = 0; y < 15; y++) {
+              for (let x = 0; x < 15; x++) {
+                const cell = referenceImage.grid[x][y];
+                referenceContext.fillStyle = cell;
+                referenceContext.fillRect(y * 10, x * 10, 10, 10);
+              }
             }
-          }
+          });
         });
       });
-    });
+  }
 }
 
 const connectedUsers = {};
@@ -269,4 +282,91 @@ socket.on('startTimer', () => {
     clearInterval(myInterval);
     timer.innerHTML = '';
   });
+});
+
+socket.on('onePlayerJoined', () => {
+  const gridTable = document.getElementById('grid');
+  const resultMessage = document.getElementById('resultMessage');
+  if (resultMessage) {
+    resultMessage.remove();
+  }
+  const message = document.createElement('h3');
+  message.id = 'playersJoined';
+  message.innerText =
+    'One player has joined the game. Waiting for three more players to join!';
+  gridTable.before(message);
+
+  socket.on('twoPlayersJoined', () => {
+    const playersJoinedMessage = document.getElementById('playersJoined');
+    if (playersJoinedMessage) {
+      playersJoinedMessage.remove();
+    }
+    message.innerText =
+      'Two players have joined the game. Waiting for two more players to join!';
+    gridTable.before(message);
+  });
+
+  socket.on('threePlayersJoined', () => {
+    const playersJoinedMessage = document.getElementById('playersJoined');
+    if (playersJoinedMessage) {
+      playersJoinedMessage.remove();
+    }
+    message.innerText =
+      'Three players have joined the game. Waiting for one more player to join!';
+    gridTable.before(message);
+  });
+});
+
+socket.on('fourPlayersJoined', () => {
+  const gridTable = document.getElementById('grid');
+  const playersJoinedMessage = document.getElementById('playersJoined');
+  if (playersJoinedMessage) {
+    playersJoinedMessage.remove();
+  }
+  const message = document.createElement('h3');
+  message.id = 'playersJoined';
+  message.innerText = 'The game has started. Good luck!';
+  gridTable.before(message);
+});
+
+socket.on('onePlayerHasFinished', () => {
+  const gridTable = document.getElementById('grid');
+  const playersJoinedMessage = document.getElementById('playersJoined');
+  if (playersJoinedMessage) {
+    playersJoinedMessage.remove();
+  }
+  const message = document.createElement('h3');
+  message.id = 'playersFinished';
+  message.innerText =
+    "One player has finished the game. Click 'End game' when you're ready!";
+  gridTable.before(message);
+
+  socket.on('twoPlayersHaveFinished', () => {
+    const playersFinishedMessage = document.getElementById('playersFinished');
+    if (playersFinishedMessage) {
+      playersFinishedMessage.remove();
+    }
+    message.innerText =
+      "Two players have finished the game. Click 'End game' when you're ready!";
+    gridTable.before(message);
+  });
+
+  socket.on('threePlayersHaveFinished', () => {
+    const playersFinishedMessage = document.getElementById('playersFinished');
+    if (playersFinishedMessage) {
+      playersFinishedMessage.remove();
+    }
+    message.innerText =
+      "Three players have finished the game. Click 'End game' when you're ready!";
+    gridTable.before(message);
+  });
+});
+
+socket.on('fourPlayersHaveFinished', () => {
+  const playersFinishedMessage = document.getElementById('playersFinished');
+  if (playersFinishedMessage) {
+    playersFinishedMessage.remove();
+  }
+  printResults();
+  socket.emit('clearGame');
 });

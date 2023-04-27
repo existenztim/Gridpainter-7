@@ -2,6 +2,7 @@ const ReferenceImage = require('./models/referenceImage');
 let grid = [];
 let connectedUsers = {};
 let joinButtonCount = 0;
+let endGameButtonCount = 0;
 const colors = ['red', 'blue', 'yellow', 'green'];
 
 function gameHandler(io) {
@@ -22,8 +23,8 @@ function gameHandler(io) {
         const color = availableColors[0];
         connectedUsers[socket.id] = color;
         console.log('new user connected:', socket.id, 'with color:', color);
-        socket.emit('joinResponse', { color });
         socket.emit('gridData', { grid });
+        socket.emit('joinResponse', { color });
 
         joinButtonCount++;
         if (joinButtonCount === 4) {
@@ -31,6 +32,21 @@ function gameHandler(io) {
         }
 
         if (Object.keys(connectedUsers).length === 1) {
+          io.emit('onePlayerJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 2) {
+          io.emit('twoPlayersJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 3) {
+          io.emit('threePlayersJoined');
+          io.emit('disableEndGameButton');
+        }
+
+        if (Object.keys(connectedUsers).length === 4) {
           try {
             const response = await fetch(
               'http://localhost:3000/referenceImage/randomGameImage'
@@ -49,6 +65,8 @@ function gameHandler(io) {
             console.error(error);
           }
           io.emit('startTimer');
+          io.emit('fourPlayersJoined');
+          io.emit('enableEndGameButton');
         }
       } else {
         return;
@@ -76,8 +94,28 @@ function gameHandler(io) {
     });
 
     socket.on('endGame', () => {
+      endGameButtonCount++;
+      if (endGameButtonCount === 1) {
+        io.emit('onePlayerHasFinished');
+      }
+
+      if (endGameButtonCount === 2) {
+        io.emit('twoPlayersHaveFinished');
+      }
+
+      if (endGameButtonCount === 3) {
+        io.emit('threePlayersHaveFinished');
+      }
+
+      if (endGameButtonCount === 4) {
+        io.emit('fourPlayersHaveFinished');
+      }
+    });
+
+    socket.on('clearGame', () => {
       connectedUsers = {};
       joinButtonCount = 0;
+      endGameButtonCount = 0;
       grid = [];
       for (let y = 0; y < 15; y++) {
         let row = [];

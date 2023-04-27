@@ -9,10 +9,12 @@ export function printChat() {
     <h1>Welcome, ${user.name}</h1>
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
+    <div class="chatbox"></div>
     <ul class="messages"></ul>
-    <button id="logoutBtn">Logout</button>
+    <div class="typingIndicator"></div>
     <form class="form">
     <input class="input" type="text">
+    <button class="submitButton">Send</button>
     <select name="rooms" id="roomSelect">
     <option value="">--Please choose a room to join--
       <option value="room1">Room 1</option>
@@ -21,11 +23,10 @@ export function printChat() {
     </option>
     </select>
     <button class="roomButton">Join chatroom</button>
-    <button class="submitButton">Send</button>
     </form>
-   
+    <button id="logoutBtn">Logout</button>
    `;
-  
+    let isTyping = false;
     const form = document.querySelector('.form');
     const input = document.querySelector('.input');
     const messages = document.querySelector('.messages');
@@ -33,6 +34,8 @@ export function printChat() {
     const selectedRom = document.querySelector("#roomSelect"); 
     const chatFeedBack = document.querySelector("#chatFeedback");
     const roomNumber = document.querySelector("#roomNumber");
+    const typingIndicator = document.querySelector(".typingIndicator");
+    const chatbox = document.querySelector(".chatbox");
     
     input.addEventListener('input', (e) => {
       const value = e.target.value;
@@ -52,6 +55,19 @@ export function printChat() {
       if (regex4.test(value)) {
         e.target.value = value.replace(regex4, '😞');
       }
+      if (value.trim().length > 0) {
+        isTyping = true;
+        socket.emit("typing", selectedRom.value, user.name);
+        indicateTyping(user.name);
+      } else {
+        isTyping = false;
+        socket.emit("stopped typing", selectedRom.value, user.name);
+        clearTimeout(typingTimeout);
+      }
+      const submitButton = document.querySelector(".submitButton");
+      submitButton.addEventListener("click", () => {
+         isTyping = false;
+      })
     });
 
     form.addEventListener('submit', function (event) {
@@ -85,8 +101,12 @@ export function printChat() {
       checkLogin();
     });
 
-    socket.on('chat', (arg) => {
-      console.log('chat', arg);
+    socket.on('typing', (username) => {
+      indicateTyping()
+    });
+    
+    socket.on('stop typing', (username) => {
+      isTyping = false;
     });
 
     socket.on('chat message', function (message) {
@@ -107,16 +127,30 @@ export function printChat() {
       } else {
         chatTextLi.classList.add('received');
       }
-  
+      chatbox.appendChild(messages);
       messages.appendChild(chatTextLi);
     });
 
-    //detta nedan skickar endast ett meddelande till användaren som ansluter och berättar vilket rum de befinner sig i
-    
-    // socket.on("join-room", function (room) { 
-    //   const joinMessageLi = document.createElement('li');
-    //   joinMessageLi.innerText = `You have joined ${room}, say hello!`;
-    //   joinMessageLi.classList.add('sent');
-    //   messages.appendChild(joinMessageLi);
-    // })
+let typingTimeout;
+
+function indicateTyping(username) {
+  typingIndicator.style.display = "flex";
+  typingIndicator.innerHTML = 
+  `<span>${username} is typing...</span>
+  <div class="dots-container">
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  </div>`;
+
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    isTyping = false;
+    typingIndicator.style.visibility = 'hidden';
+    clearTimeout(typingTimeout);
+    }, 2000);
   }
+};
+
+
+
