@@ -45,6 +45,19 @@ h1 {
   position: relative;
 }
 
+#roomList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 70vw;
+  width: 100%;
+  list-style: none;
+}
+
 #referenceCanvas {
   width: 300px; 
   height: 300px;
@@ -79,7 +92,7 @@ h1 {
   position: relative;
 }
 
-.sent span, .received span {
+.sent span, .received span, .autoText span {
   position: absolute; 
   top: 30px;
   border-radius: 5px;
@@ -102,6 +115,14 @@ h1 {
     margin: 2rem 0;
     position: relative;
     align-self: flex-end;
+  }
+
+  .autoText {
+    background-color: #fff3cc; /* light blue */
+    color: #000; /* black */
+    margin: 2rem 0;
+    position: relative;
+    align-self: center;
   }
 
   @keyframes slidein {
@@ -319,4 +340,3 @@ button {
     border: 1px solid black;
   }
 }
-

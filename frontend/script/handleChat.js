@@ -9,6 +9,11 @@ export function printChat() {
     <h1>Welcome, ${user.name}</h1>
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
+    <ul id="roomList">
+      <li class="roomCounter">Room1: 0 users online</li>
+      <li class="roomCounter">Room2: 0 users online</li>
+      <li class="roomCounter">Room3: 0 users online</li>
+    </ul>
     <div class="chatbox"></div>
     <ul class="messages"></ul>
     <div class="typingIndicator"></div>
@@ -89,7 +94,19 @@ export function printChat() {
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
-      socket.emit("join-room", room, user.name);
+      if(!joinRoomBtn.classList.contains("inRoom")){
+        socket.emit("join-room", room, user.name);
+        joinRoomBtn.classList.toggle("inRoom");
+        joinRoomBtn.innerText ="Leave Chatroom";
+        selectedRom.disabled = true;
+      } else {
+        socket.emit("leave-room", room, user.name);
+        joinRoomBtn.classList.toggle("inRoom");
+        joinRoomBtn.innerText ="Join chatroom";
+        roomNumber.innerText= "";
+        selectedRom.disabled = false;
+      }
+     
     } else {
       roomNumber.innerText= "";
     }
@@ -101,6 +118,20 @@ export function printChat() {
       checkLogin();
     });
 
+    socket.on('room-feedback', function (message){
+      let roomUpdate;
+      if (message.startsWith("room1")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(1)");
+      }
+      if (message.startsWith("room2")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(2)");
+      }
+      if (message.startsWith("room3")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(3)");
+      }
+      let messageCapitalize = message.charAt(0).toUpperCase();
+      roomUpdate.innerHTML = messageCapitalize + message.slice(1);
+    });
     socket.on('typing', (username) => {
       indicateTyping()
     });
@@ -124,6 +155,8 @@ export function printChat() {
   
       if (username === user.name) {
         chatTextLi.classList.add('sent');
+      } else if (username.startsWith('[AUTO-GENERATED]')) {
+        chatTextLi.classList.add('autoText');
       } else {
         chatTextLi.classList.add('received');
       }
