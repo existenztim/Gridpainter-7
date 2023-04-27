@@ -1,5 +1,4 @@
 const ReferenceImage = require('./models/referenceImage');
-const SaveLoadImageModel = require('./models/saveLoad.model');
 let grid = [];
 let connectedUsers = {};
 let joinButtonCount = 0;
@@ -107,11 +106,6 @@ function gameHandler(io) {
         .catch((err) => {
           console.error(err);
         });
-    });
-
-    socket.on('saveImage', (userId) => {
-      const saveImage = new SaveLoadImageModel({ userId: userId.userId, grid });
-      saveImage.save();
     });
   });
 }
