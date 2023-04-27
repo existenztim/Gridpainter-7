@@ -26,6 +26,7 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 0;
+
 }
 
 .gameName {
@@ -172,6 +173,63 @@ h1 {
       background-color: #B5D9CB; 
     }
   }
+  .typingIndicator {
+    background-color: #DCF8C6;
+    color: #000;
+    margin: 2rem 4px;
+    position: relative; 
+    left: auto;
+  }
+  .dots-container {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+  
+  .dots-container span {
+    top:0;
+    color: #000;
+  }
+
+  .dots-container .dot {
+    animation: typingDotsAnimation 1.8s infinite ease-in-out;
+    background-color: #6CAD96;
+    border-radius: 50%;
+    height: 7px;
+    margin-right: 7px;
+    width: 7px;
+  }
+  
+  .dots-container .dot:nth-child(1) {
+    animation-delay: 200ms;
+  }
+  
+  .dots-container .dot:nth-child(2) {
+    animation-delay: 300ms;
+  }
+  
+  .dots-container .dot:nth-child(3) {
+    animation-delay: 400ms;
+  }
+  
+  .dots-container .dot:last-child {
+    margin-right: 0;
+  }
+  
+  @keyframes typingDotsAnimation {
+    0% {
+      transform: translateY(0px);
+      background-color:#6CAD96; 
+    }
+    28% {
+      transform: translateY(-7px);
+      background-color:#9ECAB9; 
+    }
+    44% {
+      transform: translateY(0px);
+      background-color: #B5D9CB; 
+    }
+  }
 
 #loginContainer {
   width: 300px;
@@ -236,6 +294,7 @@ button {
     margin: 0.25rem;
     background-color: #fff;
   }
+
   .submitButton {
     @include button-style; /* Reused mixin */
     margin-left: 10px;
@@ -260,3 +319,4 @@ button {
     border: 1px solid black;
   }
 }
+
