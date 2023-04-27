@@ -49,6 +49,18 @@ body {
     border: 1px solid black;
   }
 }
+#roomList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 70vw;
+  width: 100%;
+  list-style: none;
+}
 
 #referenceCanvas {
   width: 300px; 

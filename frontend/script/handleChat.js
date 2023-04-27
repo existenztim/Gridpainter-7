@@ -10,9 +10,9 @@ export function printChat() {
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
     <ul id="roomList">
-      <li class="roomCounter">Room 1: 0 users online</li>
-      <li class="roomCounter">Room 2: 0 users online</li>
-      <li class="roomCounter">Room 3: 0 users online</li>
+      <li class="roomCounter">Room1: 0 users online</li>
+      <li class="roomCounter">Room2: 0 users online</li>
+      <li class="roomCounter">Room3: 0 users online</li>
     </ul>
     <ul class="messages"></ul>
     <button id="logoutBtn">Logout</button>
