@@ -6,7 +6,6 @@ export function printGame() {
   game.innerHTML += /*html*/`
   <button id='joinButton'>Join game</button>
   <button id='saveReferenceButton'>Save reference image</button>
-  <button id='resultButton'>Show results</button>
   <h3 id="timer"></h3>
   <table id="grid" border="1"></table>
   <canvas id='referenceCanvas' width='150' height='150'></canvas>`;
