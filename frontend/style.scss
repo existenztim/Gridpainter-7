@@ -16,6 +16,11 @@ $color-dark-blue: #6576c2;
   cursor: pointer;
 }
 
+button:disabled {
+  background-color: lightgrey;
+  cursor: default;
+}
+
 body {
   margin: 0;
   padding-bottom: 3rem;
@@ -56,16 +61,6 @@ h1 {
   max-width: 70vw;
   width: 100%;
   list-style: none;
-}
-
-#referenceCanvas {
-  width: 300px; 
-  height: 300px;
-  border: 1px solid black;
-}
-
-.redNumbers {
-  color: red;
 }
 
 .messages {
@@ -323,13 +318,40 @@ button {
   }
 }
 
+#game {
+  text-align: center;
+  margin-top: 30px;
+}
+
+#logoutBtn {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+}
+
+#gameContainer {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+#referenceCanvas {
+  width: 225px; 
+  height: 225px;
+  outline: 10px solid black;
+  outline-style: ridge;
+}
+
+.redNumbers {
+  color: red;
+}
+
 #grid {
   display: grid;
   grid-template-columns: repeat(15, 30px);
   grid-gap: 3px;
   padding: 4px;
   max-width: fit-content;
-  margin: 10px auto;
   height: auto;
   outline: 10px solid black;
   outline-style: ridge;

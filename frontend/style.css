@@ -1,0 +1,362 @@
+button:disabled {
+  background-color: lightgrey;
+  cursor: default;
+}
+
+body {
+  margin: 0;
+  padding-bottom: 3rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.gameName {
+  font-family: "Press Start 2P", cursive;
+  font-size: 3rem;
+  color: #6576c2;
+}
+
+#app {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+}
+
+#roomList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 70vw;
+  width: 100%;
+  list-style: none;
+}
+
+.messages {
+  list-style: none;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: 70vw;
+  width: 100%;
+  outline: 2px solid black;
+}
+
+.messages li {
+  display: flex;
+  justify-content: flex-start;
+  margin: 20px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  word-wrap: break-word;
+  font-size: 16px;
+  animation: 1s ease-in 0s 1 slidein;
+  position: relative;
+}
+
+.sent span, .received span, .autoText span {
+  position: absolute;
+  top: 30px;
+  border-radius: 5px;
+  animation: none;
+  margin: 10px 0;
+  color: grey;
+}
+
+.sent {
+  background-color: #DCF8C6; /* light green */
+  color: #000; /* black */
+  margin: 2rem 0;
+  position: relative;
+  align-self: flex-start;
+}
+
+.received {
+  background-color: #CCE5FF; /* light blue */
+  color: #000; /* black */
+  margin: 2rem 0;
+  position: relative;
+  align-self: flex-end;
+}
+
+.autoText {
+  background-color: #fff3cc; /* light blue */
+  color: #000; /* black */
+  margin: 2rem 0;
+  position: relative;
+  align-self: center;
+}
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+.typingIndicator {
+  background-color: #DCF8C6;
+  color: #000;
+  margin: 2rem 4px;
+  position: relative;
+  left: auto;
+}
+
+.dots-container {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.dots-container span {
+  top: 0;
+  color: #000;
+}
+
+.dots-container .dot {
+  animation: typingDotsAnimation 1.8s infinite ease-in-out;
+  background-color: #6CAD96;
+  border-radius: 50%;
+  height: 7px;
+  margin-right: 7px;
+  width: 7px;
+}
+
+.dots-container .dot:nth-child(1) {
+  animation-delay: 200ms;
+}
+
+.dots-container .dot:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.dots-container .dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+.dots-container .dot:last-child {
+  margin-right: 0;
+}
+
+@keyframes typingDotsAnimation {
+  0% {
+    transform: translateY(0px);
+    background-color: #6CAD96;
+  }
+  28% {
+    transform: translateY(-7px);
+    background-color: #9ECAB9;
+  }
+  44% {
+    transform: translateY(0px);
+    background-color: #B5D9CB;
+  }
+}
+.typingIndicator {
+  background-color: #DCF8C6;
+  color: #000;
+  margin: 2rem 4px;
+  position: relative;
+  left: auto;
+}
+
+.dots-container {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.dots-container span {
+  top: 0;
+  color: #000;
+}
+
+.dots-container .dot {
+  animation: typingDotsAnimation 1.8s infinite ease-in-out;
+  background-color: #6CAD96;
+  border-radius: 50%;
+  height: 7px;
+  margin-right: 7px;
+  width: 7px;
+}
+
+.dots-container .dot:nth-child(1) {
+  animation-delay: 200ms;
+}
+
+.dots-container .dot:nth-child(2) {
+  animation-delay: 300ms;
+}
+
+.dots-container .dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+.dots-container .dot:last-child {
+  margin-right: 0;
+}
+
+@keyframes typingDotsAnimation {
+  0% {
+    transform: translateY(0px);
+    background-color: #6CAD96;
+  }
+  28% {
+    transform: translateY(-7px);
+    background-color: #9ECAB9;
+  }
+  44% {
+    transform: translateY(0px);
+    background-color: #B5D9CB;
+  }
+}
+#loginContainer {
+  width: 300px;
+  height: 375px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border: 1px solid black;
+  border-radius: 20px;
+  box-shadow: 1px 1px 2px 1px grey;
+}
+#loginContainer .form {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  height: 3rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+#loginContainer .form input {
+  border: none;
+  padding: 10px;
+  flex-grow: 1;
+  border-radius: 20px;
+  margin: 0.25rem;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+button {
+  background-color: #6576c2;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.5rem 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#chatFeedback, #roomNumber {
+  text-align: center;
+}
+
+.form {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  height: 3rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 70vw;
+  margin: 5px;
+}
+.form input {
+  border: none;
+  padding: 10px;
+  flex-grow: 1;
+  border-radius: 20px;
+  margin: 0.25rem;
+  background-color: #fff;
+}
+.form .submitButton {
+  background-color: #6576c2;
+  border: none;
+  padding: 0 1rem;
+  margin: 0.5rem 0.25rem;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Reused mixin */
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#game {
+  text-align: center;
+  margin-top: 30px;
+}
+
+#logoutBtn {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+}
+
+#gameContainer {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+#referenceCanvas {
+  width: 225px;
+  height: 225px;
+  outline: 10px solid black;
+  outline-style: ridge;
+}
+
+.redNumbers {
+  color: red;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(15, 30px);
+  grid-gap: 3px;
+  padding: 4px;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  height: auto;
+  outline: 10px solid black;
+  outline-style: ridge;
+}
+#grid .cell {
+  height: 30px;
+  width: 30px;
+  border: 1px solid black;
+}/*# sourceMappingURL=style.css.map */
