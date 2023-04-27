@@ -13,7 +13,16 @@ function chatHandler(io){
         console.log(`Socket id: ${socket.id}: "${username}" wrote: ${message} in ${room}`);
       });
 
-     socket.on("join-room", (room, username, message) => {
+  
+    socket.on('typing', (username, room) => {
+      socket.to(room).emit('typing', username);
+    });
+
+    socket.on('stop typing', (username, room) => {
+      socket.to(room).emit('stop typing', username);
+    });
+    
+   socket.on("join-room", (room, username, message) => {
         socket.emit('join-room', room, username); 
         if(room == "room1"  //Safety check if client manipulate DOM
         || room == "room2"
@@ -37,7 +46,7 @@ function chatHandler(io){
         socket.broadcast.emit('room-feedback', `${room} : ${userCounts[room]} users online`);
         console.log(`Number of users in ${room}: ${userCounts[room]}`);
         io.to(room).emit('chat message', `[AUTO-GENERATED] ${username}: I just left this chat room, Goodbye!`); 
-      });
+      });;
     });
   }
 
