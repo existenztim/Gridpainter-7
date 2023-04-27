@@ -6,7 +6,7 @@ console.log(user);
 export function printGame() {
   user = JSON.parse(localStorage.getItem('user'));
   const game = document.querySelector('#game');
-  game.innerHTML += /*html*/ `
+  game.innerHTML = /*html*/ `
   <button id='joinButton'>Join game</button>
   <button id='saveReferenceButton'>Save reference image</button>
   <button id='resultButton'>Show results</button>
@@ -132,10 +132,14 @@ export function printGame() {
 
 function saveGrid() {
   const grid = [];
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell) => {
-    grid.push(cell.style.backgroundColor);
-  });
+  for (let y = 0; y < 15; y++) {
+    let row = [];
+    for (let x = 0; x < 15; x++) {
+      const cell = document.getElementById(`cell-${x}-${y}`);
+      row.push(cell.style.backgroundColor);
+    }
+    grid.push(row);
+  }
 
   fetch('http://localhost:3000/images/save', {
     method: 'POST',
@@ -168,7 +172,26 @@ function loadGrid() {
       saveLoadMsg.innerHTML = '';
       data.map((img) => {
         saveLoadMsg.innerHTML += `
-        <button>${img.createdOn}</button>`;
+        <button class="loadGridBtn" data-id="${img._id}">${img.createdOn}</button>`;
+      });
+      const btns = document.querySelectorAll('.loadGridBtn');
+      btns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const image = data.filter(
+            (img) => img._id === e.currentTarget.dataset.id
+          );
+          console.log(image[0]);
+          let referenceImage = image[0];
+          const referenceCanvas = document.getElementById('referenceCanvas');
+          const referenceContext = referenceCanvas.getContext('2d');
+          for (let y = 0; y < 15; y++) {
+            for (let x = 0; x < 15; x++) {
+              const cell = referenceImage.grid[x][y];
+              referenceContext.fillStyle = cell;
+              referenceContext.fillRect(y * 10, x * 10, 10, 10);
+            }
+          }
+        });
       });
     });
 }
