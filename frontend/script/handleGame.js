@@ -47,7 +47,7 @@ export function printGame() {
 
     socket.emit('checkIfUserIsInGame');
     socket.on('gameFull', () => {
-      const gridTable = document.getElementById('grid');
+      const gameContainer = document.getElementById('gameContainer');
       const fullGameMessage = document.getElementById('fullGameMessage');
       if (fullGameMessage) {
         fullGameMessage.remove();
@@ -55,7 +55,7 @@ export function printGame() {
       const message = document.createElement('h2');
       message.id = 'fullGameMessage';
       message.innerText = 'The game is currently full';
-      gridTable.before(message);
+      gameContainer.before(message);
     });
   });
 
