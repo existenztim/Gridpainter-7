@@ -2,7 +2,7 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
 
 export function printChat() {
-    const socket = io('http://localhost:3000');
+    const socket = io('http://localhost:3003');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
@@ -10,9 +10,10 @@ export function printChat() {
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
     <ul class="messages"></ul>
-    <button id="logoutBtn">Logout</button>
+    <div class="typingIndicator"></div>
     <form class="form">
     <input class="input" type="text">
+    <button class="submitButton">Send</button>
     <select name="rooms" id="roomSelect">
     <option value="">--Please choose a room to join--
       <option value="room1">Room 1</option>
@@ -21,9 +22,8 @@ export function printChat() {
     </option>
     </select>
     <button class="roomButton">Join chatroom</button>
-    <button class="submitButton">Send</button>
     </form>
-   
+    <button id="logoutBtn">Logout</button>
    `;
   
     const form = document.querySelector('.form');
@@ -33,6 +33,8 @@ export function printChat() {
     const selectedRom = document.querySelector("#roomSelect"); 
     const chatFeedBack = document.querySelector("#chatFeedback");
     const roomNumber = document.querySelector("#roomNumber");
+    const typingIndicator = document.querySelector(".typingIndicator");
+    let isTyping = false;
     
     input.addEventListener('input', (e) => {
       const value = e.target.value;
@@ -51,6 +53,15 @@ export function printChat() {
       }
       if (regex4.test(value)) {
         e.target.value = value.replace(regex4, '😞');
+      }
+      if (value.trim().length > 0) {
+        isTyping = true;
+        socket.emit("typing", selectedRom.value, user.name);
+        indicateTyping(user.name);
+      } else {
+        isTyping = false;
+        socket.emit("stopped typing", selectedRom.value, user.name);
+        clearTimeout(typingTimeout);
       }
     });
 
@@ -110,6 +121,27 @@ export function printChat() {
   
       messages.appendChild(chatTextLi);
     });
+
+let typingTimeout;
+
+function indicateTyping(username) {
+  typingIndicator.style.display = "flex";
+  typingIndicator.innerHTML = 
+  `<span>${username} is typing...</span>
+  <div class="dots-container">
+  <span class="dot"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+  </div>`;
+
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    isTyping = false;
+    typingIndicator.style.visibility = 'hidden';
+    clearTimeout(typingTimeout);
+  }, 3000);
+};
+
 
     //detta nedan skickar endast ett meddelande till användaren som ansluter och berättar vilket rum de befinner sig i
     
