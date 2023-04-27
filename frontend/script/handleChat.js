@@ -9,6 +9,11 @@ export function printChat() {
     <h1>Welcome, ${user.name}</h1>
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
+    <ul id="roomList">
+      <li class="roomCounter">Room 1: 0 users online</li>
+      <li class="roomCounter">Room 2: 0 users online</li>
+      <li class="roomCounter">Room 3: 0 users online</li>
+    </ul>
     <ul class="messages"></ul>
     <button id="logoutBtn">Logout</button>
     <form class="form">
@@ -97,8 +102,19 @@ export function printChat() {
       checkLogin();
     });
 
-    socket.on('chat', (arg) => {
-      console.log('chat', arg);
+    socket.on('room-feedback', function (message){
+      let roomUpdate;
+      if (message.startsWith("room1")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(1)");
+      }
+      if (message.startsWith("room2")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(2)");
+      }
+      if (message.startsWith("room3")){
+        roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(3)");
+      }
+      let messageCapitalize = message.charAt(0).toUpperCase();
+      roomUpdate.innerHTML = messageCapitalize + message.slice(1);
     });
 
     socket.on('chat message', function (message) {
