@@ -16,8 +16,17 @@ $color-dark-blue: #6576c2;
   cursor: pointer;
 }
 
+body {
+  margin: 0;
+  padding-bottom: 3rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
 h1 {
   text-align: center;
+  margin-bottom: 0;
+
 }
 
 .gameName {
@@ -26,29 +35,16 @@ h1 {
   color:#6576c2;
 }
 
-body {
-  margin: 0;
-  padding-bottom: 3rem;
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+#app {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; 
+  gap: 20px;
+  position: relative;
 }
 
-#grid {
-  display: grid;
-  grid-template-columns: repeat(15, 30px);
-  grid-gap: 3px;
-  padding: 4px;
-  max-width: fit-content;
-  margin: 10px auto;
-  height: auto;
-  outline: 10px solid black;
-  outline-style: ridge;
-
-  .cell {
-    height: 30px;
-    width: 30px;
-    border: 1px solid black;
-  }
-}
 #roomList {
   display: flex;
   flex-direction: column;
@@ -66,6 +62,10 @@ body {
   width: 300px; 
   height: 300px;
   border: 1px solid black;
+}
+
+.redNumbers {
+  color: red;
 }
 
 .messages {
@@ -92,7 +92,7 @@ body {
   position: relative;
 }
 
-span {
+.sent span, .received span, .autoText span {
   position: absolute; 
   top: 30px;
   border-radius: 5px;
@@ -137,6 +137,120 @@ span {
     }
   }
 
+  .typingIndicator {
+    background-color: #DCF8C6;
+    color: #000;
+    margin: 2rem 4px;
+    position: relative; 
+    left: auto;
+  }
+  .dots-container {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+  
+  .dots-container span {
+    top:0;
+    color: #000;
+  }
+
+  .dots-container .dot {
+    animation: typingDotsAnimation 1.8s infinite ease-in-out;
+    background-color: #6CAD96;
+    border-radius: 50%;
+    height: 7px;
+    margin-right: 7px;
+    width: 7px;
+  }
+  
+  .dots-container .dot:nth-child(1) {
+    animation-delay: 200ms;
+  }
+  
+  .dots-container .dot:nth-child(2) {
+    animation-delay: 300ms;
+  }
+  
+  .dots-container .dot:nth-child(3) {
+    animation-delay: 400ms;
+  }
+  
+  .dots-container .dot:last-child {
+    margin-right: 0;
+  }
+  
+  @keyframes typingDotsAnimation {
+    0% {
+      transform: translateY(0px);
+      background-color:#6CAD96; 
+    }
+    28% {
+      transform: translateY(-7px);
+      background-color:#9ECAB9; 
+    }
+    44% {
+      transform: translateY(0px);
+      background-color: #B5D9CB; 
+    }
+  }
+  .typingIndicator {
+    background-color: #DCF8C6;
+    color: #000;
+    margin: 2rem 4px;
+    position: relative; 
+    left: auto;
+  }
+  .dots-container {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+  
+  .dots-container span {
+    top:0;
+    color: #000;
+  }
+
+  .dots-container .dot {
+    animation: typingDotsAnimation 1.8s infinite ease-in-out;
+    background-color: #6CAD96;
+    border-radius: 50%;
+    height: 7px;
+    margin-right: 7px;
+    width: 7px;
+  }
+  
+  .dots-container .dot:nth-child(1) {
+    animation-delay: 200ms;
+  }
+  
+  .dots-container .dot:nth-child(2) {
+    animation-delay: 300ms;
+  }
+  
+  .dots-container .dot:nth-child(3) {
+    animation-delay: 400ms;
+  }
+  
+  .dots-container .dot:last-child {
+    margin-right: 0;
+  }
+  
+  @keyframes typingDotsAnimation {
+    0% {
+      transform: translateY(0px);
+      background-color:#6CAD96; 
+    }
+    28% {
+      transform: translateY(-7px);
+      background-color:#9ECAB9; 
+    }
+    44% {
+      transform: translateY(0px);
+      background-color: #B5D9CB; 
+    }
+  }
 
 #loginContainer {
   width: 300px;
@@ -178,4 +292,51 @@ button {
 
 #chatFeedback, #roomNumber {
   text-align: center;
+}
+
+.form {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.25rem;
+  height: 3rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  position: relative; 
+  bottom: 0; 
+  left: 0; 
+  width: 70vw;
+  margin: 5px;
+
+  input {
+    border: none;
+    padding: 10px;
+    flex-grow: 1;
+    border-radius: 20px;
+    margin: 0.25rem;
+    background-color: #fff;
+  }
+
+  .submitButton {
+    @include button-style; /* Reused mixin */
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(15, 30px);
+  grid-gap: 3px;
+  padding: 4px;
+  max-width: fit-content;
+  margin: 10px auto;
+  height: auto;
+  outline: 10px solid black;
+  outline-style: ridge;
+
+  .cell {
+    height: 30px;
+    width: 30px;
+    border: 1px solid black;
+  }
 }
