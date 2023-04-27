@@ -92,6 +92,12 @@ export function printGame() {
     socket.emit('saveReferenceImage', { grid });
   });
 
+  const saveBtn = document.querySelector('#saveButton');
+  saveBtn.addEventListener('click', saveGrid);
+
+  const loadBtn = document.querySelector('#loadButton');
+  loadBtn.addEventListener('click', loadGrid);
+
   createGrid();
 }
 
@@ -141,72 +147,72 @@ function printResults() {
     const loadBtn = document.querySelector('#loadButton');
     loadBtn.addEventListener('click', loadGrid);
   }
+}
 
-  function saveGrid() {
-    const grid = [];
-    for (let y = 0; y < 15; y++) {
-      let row = [];
-      for (let x = 0; x < 15; x++) {
-        const cell = document.getElementById(`cell-${x}-${y}`);
-        row.push(cell.style.backgroundColor);
-      }
-      grid.push(row);
+function saveGrid() {
+  const grid = [];
+  for (let y = 0; y < 15; y++) {
+    let row = [];
+    for (let x = 0; x < 15; x++) {
+      const cell = document.getElementById(`cell-${x}-${y}`);
+      row.push(cell.style.backgroundColor);
     }
-
-    fetch('http://localhost:3000/images/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/JSON',
-      },
-      body: JSON.stringify({
-        userId: user.id,
-        grid,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const saveLoadMsg = document.querySelector('#saveLoadMsg');
-        saveLoadMsg.innerHTML = 'Image saved!';
-      });
+    grid.push(row);
   }
 
-  function loadGrid() {
-    fetch('http://localhost:3000/images/load', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/JSON',
-      },
-      body: JSON.stringify({ userId: user.id }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const saveLoadMsg = document.querySelector('#saveLoadMsg');
-        saveLoadMsg.innerHTML = '';
-        data.map((img) => {
-          saveLoadMsg.innerHTML += `
-        <button class="loadGridBtn" data-id="${img._id}">${img.createdOn}</button>`;
-        });
-        const btns = document.querySelectorAll('.loadGridBtn');
-        btns.forEach((btn) => {
-          btn.addEventListener('click', (e) => {
-            const image = data.filter(
-              (img) => img._id === e.currentTarget.dataset.id
-            );
-            console.log(image[0]);
-            let referenceImage = image[0];
-            const referenceCanvas = document.getElementById('referenceCanvas');
-            const referenceContext = referenceCanvas.getContext('2d');
-            for (let y = 0; y < 15; y++) {
-              for (let x = 0; x < 15; x++) {
-                const cell = referenceImage.grid[x][y];
-                referenceContext.fillStyle = cell;
-                referenceContext.fillRect(y * 10, x * 10, 10, 10);
-              }
+  fetch('http://localhost:3000/images/save', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/JSON',
+    },
+    body: JSON.stringify({
+      userId: user.id,
+      grid,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const saveLoadMsg = document.querySelector('#saveLoadMsg');
+      saveLoadMsg.innerHTML = 'Image saved!';
+    });
+}
+
+function loadGrid() {
+  fetch('http://localhost:3000/images/load', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/JSON',
+    },
+    body: JSON.stringify({ userId: user.id }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const saveLoadMsg = document.querySelector('#saveLoadMsg');
+      saveLoadMsg.innerHTML = '';
+      data.map((img) => {
+        saveLoadMsg.innerHTML += `
+      <button class="loadGridBtn" data-id="${img._id}">${img.createdOn}</button>`;
+      });
+      const btns = document.querySelectorAll('.loadGridBtn');
+      btns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const image = data.filter(
+            (img) => img._id === e.currentTarget.dataset.id
+          );
+          console.log(image[0]);
+          let referenceImage = image[0];
+          const referenceCanvas = document.getElementById('referenceCanvas');
+          const referenceContext = referenceCanvas.getContext('2d');
+          for (let y = 0; y < 15; y++) {
+            for (let x = 0; x < 15; x++) {
+              const cell = referenceImage.grid[x][y];
+              referenceContext.fillStyle = cell;
+              referenceContext.fillRect(y * 10, x * 10, 10, 10);
             }
-          });
+          }
         });
       });
-  }
+    });
 }
 
 const connectedUsers = {};
