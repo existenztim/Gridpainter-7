@@ -2,13 +2,14 @@ import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
 
 export function printChat() {
-    const socket = io('http://localhost:3003');
+    const socket = io('http://localhost:3000');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
     <h1>Welcome, ${user.name}</h1>
     <h2 id="chatFeedback"></h2>
     <h3 id="roomNumber"></h3>
+    <div class="chatbox"></div>
     <ul class="messages"></ul>
     <div class="typingIndicator"></div>
     <form class="form">
@@ -25,7 +26,7 @@ export function printChat() {
     </form>
     <button id="logoutBtn">Logout</button>
    `;
-  
+    let isTyping = false;
     const form = document.querySelector('.form');
     const input = document.querySelector('.input');
     const messages = document.querySelector('.messages');
@@ -34,7 +35,7 @@ export function printChat() {
     const chatFeedBack = document.querySelector("#chatFeedback");
     const roomNumber = document.querySelector("#roomNumber");
     const typingIndicator = document.querySelector(".typingIndicator");
-    let isTyping = false;
+    const chatbox = document.querySelector(".chatbox");
     
     input.addEventListener('input', (e) => {
       const value = e.target.value;
@@ -63,6 +64,10 @@ export function printChat() {
         socket.emit("stopped typing", selectedRom.value, user.name);
         clearTimeout(typingTimeout);
       }
+      const submitButton = document.querySelector(".submitButton");
+      submitButton.addEventListener("click", () => {
+         isTyping = false;
+      })
     });
 
     form.addEventListener('submit', function (event) {
@@ -96,8 +101,12 @@ export function printChat() {
       checkLogin();
     });
 
-    socket.on('chat', (arg) => {
-      console.log('chat', arg);
+    socket.on('typing', (username) => {
+      indicateTyping()
+    });
+    
+    socket.on('stop typing', (username) => {
+      isTyping = false;
     });
 
     socket.on('chat message', function (message) {
@@ -118,7 +127,7 @@ export function printChat() {
       } else {
         chatTextLi.classList.add('received');
       }
-  
+      chatbox.appendChild(messages);
       messages.appendChild(chatTextLi);
     });
 
@@ -139,16 +148,9 @@ function indicateTyping(username) {
     isTyping = false;
     typingIndicator.style.visibility = 'hidden';
     clearTimeout(typingTimeout);
-  }, 3000);
+    }, 2000);
+  }
 };
 
 
-    //detta nedan skickar endast ett meddelande till användaren som ansluter och berättar vilket rum de befinner sig i
-    
-    // socket.on("join-room", function (room) { 
-    //   const joinMessageLi = document.createElement('li');
-    //   joinMessageLi.innerText = `You have joined ${room}, say hello!`;
-    //   joinMessageLi.classList.add('sent');
-    //   messages.appendChild(joinMessageLi);
-    // })
-  }
+
