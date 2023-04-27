@@ -1,4 +1,6 @@
 const ReferenceImage = require('./models/referenceImage');
+import fetch from 'node-fetch';
+
 let grid = [];
 let connectedUsers = {};
 let joinButtonCount = 0;
