@@ -11,14 +11,14 @@ function chatHandler(io){
         || room == "room2"
         || room == "room3"){
           socket.join(room); //join new room
-          io.to(room).emit('chat message', `${username}: I just joined this chat room, say hello!`); 
+          io.to(room).emit('chat message', `[AUTO-GENERATED] ${username}: I just joined this chat room, say hello!`); 
         }
       });
 
       socket.on("leave-room", (room, username, message) => {
         socket.emit('leave-room', room, username); 
         socket.leave(room); //Leave current rooms (if any)
-        io.to(room).emit('chat message', `${username}: I just left this chat room, Goodbye!`); 
+        io.to(room).emit('chat message', `[AUTO-GENERATED] ${username}: I just left this chat room, Goodbye!`); 
       });
     });
   }

@@ -116,6 +116,8 @@ export function printChat() {
   
       if (username === user.name) {
         chatTextLi.classList.add('sent');
+      } else if (username.startsWith('[AUTO-GENERATED]')) {
+        chatTextLi.classList.add('autoText');
       } else {
         chatTextLi.classList.add('received');
       }

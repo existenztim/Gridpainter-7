@@ -105,6 +105,14 @@ span {
     align-self: flex-end;
   }
 
+  .autoText {
+    background-color: #fff3cc; /* light blue */
+    color: #000; /* black */
+    margin: 2rem 0;
+    position: relative;
+    align-self: center;
+  }
+
   @keyframes slidein {
     from {
       opacity: 0;
