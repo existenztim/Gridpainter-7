@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const saveLoadImageSchema = new mongoose.Schema({
+const SaveLoadImageSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -15,4 +15,4 @@ const saveLoadImageSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('images', saveLoadImageSchema);
+module.exports = mongoose.model('images', SaveLoadImageSchema);
