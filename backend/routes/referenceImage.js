@@ -10,7 +10,6 @@ router.get('/randomGameImage', async (req, res) => {
     res.status(200).json(referenceImage);
   } catch (err) {
     console.error(err);
-    console.error("I find /randomGameImage endpoint but something went wrong");
   }
 });
 

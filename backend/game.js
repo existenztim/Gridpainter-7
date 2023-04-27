@@ -51,7 +51,7 @@ function gameHandler(io) {
         if (Object.keys(connectedUsers).length === 4) {
           try {
             const response = await axios.get(
-              'https://sea-lion-app-cr49a.ondigitalocean.app/randomGameImage'
+              'https://sea-lion-app-cr49a.ondigitalocean.app/referenceImage/randomGameImage'
             );
             const referenceImage = response.data;
             if (referenceImage !== null) {
