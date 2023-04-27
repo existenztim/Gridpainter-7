@@ -122,9 +122,43 @@ export function printGame() {
   });
 
   const saveBtn = document.querySelector('#saveButton');
-  saveBtn.addEventListener('click', () => {
-    socket.emit('saveImage', { userId: user.id });
+  saveBtn.addEventListener('click', saveGrid);
+
+  const loadBtn = document.querySelector('#loadButton');
+  loadBtn.addEventListener('click', loadGrid);
+}
+
+function saveGrid() {
+  const grid = [];
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell) => {
+    grid.push(cell.style.backgroundColor);
   });
+
+  fetch('http://localhost:3000/images/save', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/JSON',
+    },
+    body: JSON.stringify({
+      userId: user.id,
+      grid,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+}
+
+function loadGrid() {
+  fetch('http://localhost:3000/images/load', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/JSON',
+    },
+    body: JSON.stringify({ userId: user.id }),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data));
 }
 
 const connectedUsers = {};
