@@ -1,4 +1,5 @@
 const ReferenceImage = require('./models/referenceImage');
+const axios = require('axios');
 
 let grid = [];
 let connectedUsers = {};
@@ -49,10 +50,10 @@ function gameHandler(io) {
 
         if (Object.keys(connectedUsers).length === 4) {
           try {
-            const response = await fetch(
+            const response = await axios.get(
               'https://sea-lion-app-cr49a.ondigitalocean.app/randomGameImage'
             );
-            const referenceImage = await response.json();
+            const referenceImage = response.data;
             if (referenceImage !== null) {
               console.log(
                 'Loaded reference image from the database:',
@@ -65,6 +66,7 @@ function gameHandler(io) {
           } catch (error) {
             console.error(error);
           }
+        
           io.emit('startTimer');
           io.emit('fourPlayersJoined');
           io.emit('enableEndGameButton');
