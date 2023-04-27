@@ -49,7 +49,7 @@ function gameHandler(io) {
         if (Object.keys(connectedUsers).length === 4) {
           try {
             const response = await fetch(
-              'http://localhost:3000/referenceImage/randomGameImage'
+              'https://sea-lion-app-cr49a.ondigitalocean.app'
             );
             const referenceImage = await response.json();
             if (referenceImage !== null) {
