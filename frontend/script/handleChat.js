@@ -1,8 +1,10 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
+const BASE_URL = 'http://localhost:3000';
+const CLOUD_URL = 'https://sea-lion-app-cr49a.ondigitalocean.app';
 
 export function printChat() {
-    const socket = io('http://localhost:3000');
+    const socket = io(CLOUD_URL);
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
