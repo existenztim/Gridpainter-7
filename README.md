@@ -1,29 +1,41 @@
-Gruppuppgift: Gridpainter
+﻿# Gridpainter - a chat/game app!
 
-Verktyget
+This is a fullstack app that lets you chat and paint grids with other users using socket.io. 
 
-Ni skall tillsammans i eran grupp ta fram en applikation för att färglägga online.
-Färgläggning skall ske i realtid mellan samtliga inloggade i applikationen, minst 4 st.
-Varje användare får en färg och målar med den färgen.
-Färgning skall ske i ett rutnät med minst 15 kolumner och 15 rader. 
+![chat](https://user-images.githubusercontent.com/100682425/235138206-e876645c-24f8-4398-9c99-c48f716876e4.png)
 
-Chat – Det skall finnas en chat så att de 4 användare som färgar även kan chatta med varandra.
+![test](https://user-images.githubusercontent.com/100682425/235139980-b2c2e5ae-9586-488f-9cb3-62eeccb36a6d.png)
 
-Spara – En bild skall kunna sparas och öppnas igen.
+# Getting Started
 
-Applikationen skall deployas på Heroku så att vi kan rita ihop!
+Before you follow these steps make sure you have node and git installed on your computer.
 
-Spelet
+1. The easiest way to get started is to click the green "<> code" button and press "download as
+   zip".
+2. Open the project in a code editor (preferably Visual Studio Code).
+3. Open the terminal and go to the root of the backend folder (e.g. via [cd backend]).
+4. Then download all dependencies using git install.
+5. Do the same steps in the root of the frontend folder (switch with command [cd ..] then [cd
+   frontend]).
+6. Import the notes-tim-sundell.sql (preferably in phpMyAdmin).
+7. Add an .env file in your backend folder and assign 2 variables named MONGODB_URI_LOCAL and MONGODB_URI_CLOUD (depending on if you
+   want a local or cloud based database. 
+   
+8. Now go to your backend folder and type [npm start] in your terminal (if you have nodemon
+   installed globally).
+9. If you don't have nodemon installed globally you have two options:
 
-Skapa minst 5 st bilder “facit” som slumpas när en session börjar, bilder innehåller de färger som deltagarna är tilldelade. Samtliga användare ser orginalbilden och nu skall deltagarna på tid försöka tillsammans måla en bild som är så lik orginalet som möjligt, genom att färglägga med sin tilldelade färg. 
+   1. Either install nodemon globally.
+   2. Or go to package.json and change the line "start": "nodemon app.js" to: "start": "node app.js".
 
-När alla klickat på “Klar” så skall bilden “rättas” för att se om det var rätt. Visa korrekthet i %.
+10. Navigate to the frontend folder via the terminal.
+11. Type [npm run dev] and follow the link in the browser. Have fun!
 
-Bilderna kan vara intingen “pixelererade” bilder på riktiga bilder. Eller helt slumpade mönster. Välj svårighetsgrad själva.
 
-Inlämning:
+# Code Stack
 
-När ni skapar ert repo på github för projetet bjud även in mig “Kemikal” till repot.
+Frontend:
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)![SASS](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)
 
-Fredag 28 april kommer alla grupper att få en presentationstid där ni skall demonstrera ert arbete och live visa hur långt ni har kommit. 
-På itslearning skall ni lämna in ett dokument med en kort beskrivning för ert projekt samt länkar till repo samt deployad version. Deadline söndag 30 april.
+Backend:
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)![MONGODB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
