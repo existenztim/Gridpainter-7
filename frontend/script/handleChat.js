@@ -94,6 +94,7 @@ export function printChat() {
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
+      
       if(!joinRoomBtn.classList.contains("inRoom")){
         socket.emit("join-room", room, user.name);
         joinRoomBtn.classList.toggle("inRoom");
@@ -113,6 +114,9 @@ export function printChat() {
     })
     const logoutBtn = document.querySelector('#logoutBtn');
     logoutBtn.addEventListener('click', () => {
+      // socket.emit("leave-room", "room1", user.name);
+      // socket.emit("leave-room", "room2", user.name);
+      // socket.emit("leave-room", "room3", user.name);
       localStorage.removeItem('user');
       game.innerHTML = '';
       checkLogin();
@@ -132,6 +136,7 @@ export function printChat() {
       let messageCapitalize = message.charAt(0).toUpperCase();
       roomUpdate.innerHTML = messageCapitalize + message.slice(1);
     });
+    
     socket.on('typing', (username) => {
       indicateTyping()
     });
