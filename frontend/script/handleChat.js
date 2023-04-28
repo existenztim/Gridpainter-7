@@ -1,10 +1,12 @@
 import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 import { checkLogin } from "../main";
+import { socketManagment, joinRoomSocket, leaveRoomSocket } from "./sockets/handleSocket";
+let user = JSON.parse(localStorage.getItem("user"));
 
 export function printChat() {
   const socket = io("http://localhost:3000");
-  let user = JSON.parse(localStorage.getItem("user"));
   const app = document.querySelector("#app");
+
   app.innerHTML = /*html*/ `
     <h1>Welcome, ${user.name}</h1>
     <h2 id="chatFeedback"></h2>
@@ -41,7 +43,6 @@ export function printChat() {
   const chatFeedBack = document.querySelector("#chatFeedback");
   const roomNumber = document.querySelector("#roomNumber");
   const typingIndicator = document.querySelector(".typingIndicator");
-  const chatbox = document.querySelector(".chatbox");
   const logoutBtn = document.querySelector("#logoutBtn");
 
   const inputEventListener = () => {
@@ -106,12 +107,12 @@ export function printChat() {
         roomNumber.innerText = `Chatting in: ${room}`;
 
         if (!joinRoomBtn.classList.contains("inRoom")) {
-          socket.emit("join-room", room, user.name);
+          joinRoomSocket(room, user.name);
           joinRoomBtn.classList.toggle("inRoom");
           joinRoomBtn.innerText = "Leave Chatroom";
           selectedRom.disabled = true;
         } else {
-          socket.emit("leave-room", room, user.name);
+          leaveRoomSocket(room, user.name);
           joinRoomBtn.classList.toggle("inRoom");
           joinRoomBtn.innerText = "Join chatroom";
           roomNumber.innerText = "";
@@ -125,77 +126,22 @@ export function printChat() {
 
   const logoutEventListener = () => {
     logoutBtn.addEventListener("click", () => {
-      // socket.emit("leave-room", "room1", user.name);
-      // socket.emit("leave-room", "room2", user.name);
-      // socket.emit("leave-room", "room3", user.name);
       localStorage.removeItem("user");
       game.innerHTML = "";
       checkLogin();
     });
   };
 
-  inputEventListener();
-  submitEventListener();
-  formEventListener();
-  joinRoomEventListener();
-  logoutEventListener();
-
-  socket.on("room-feedback", function (message) {
-    let roomUpdate;
-    if (message.startsWith("room1")) {
-      roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(1)");
-    }
-    if (message.startsWith("room2")) {
-      roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(2)");
-    }
-    if (message.startsWith("room3")) {
-      roomUpdate = document.querySelector("#roomList .roomCounter:nth-child(3)");
-    }
-    let messageCapitalize = message.charAt(0).toUpperCase();
-    roomUpdate.innerHTML = messageCapitalize + message.slice(1);
-  });
-
-  socket.on("typing", (username) => {
-    indicateTyping();
-  });
-
-  socket.on("stop typing", (username) => {
-    isTyping = false;
-  });
-
-  socket.on("chat message", function (message) {
-    let [username, text] = message.split(": ");
-    const chatTextLi = document.createElement("li");
-    const time = new Date();
-    const timeOptions = {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-    const formattedTime = time.toLocaleTimeString("en-US", timeOptions);
-    chatTextLi.innerHTML = `<strong>${username} : </strong> ${text}<br> <span>${formattedTime}</span>`;
-
-    if (username === user.name) {
-      chatTextLi.classList.add("sent");
-    } else if (username.startsWith("[AUTO-GENERATED]")) {
-      chatTextLi.classList.add("autoText");
-    } else {
-      chatTextLi.classList.add("received");
-    }
-    chatbox.appendChild(messages);
-    messages.appendChild(chatTextLi);
-  });
-
-  let typingTimeout;
-
   function indicateTyping(username) {
+    let typingTimeout;
     typingIndicator.style.display = "flex";
-    typingIndicator.innerHTML = `<span>${username} is typing...</span>
-  <div class="dots-container">
-  <span class="dot"></span>
-  <span class="dot"></span>
-  <span class="dot"></span>
-  </div>`;
+    typingIndicator.innerHTML = `
+    <span>${username} is typing...</span>
+      <div class="dots-container">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>`;
 
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
@@ -204,4 +150,11 @@ export function printChat() {
       clearTimeout(typingTimeout);
     }, 2000);
   }
+
+  inputEventListener();
+  submitEventListener();
+  formEventListener();
+  joinRoomEventListener();
+  logoutEventListener();
+  socketManagment();
 }
