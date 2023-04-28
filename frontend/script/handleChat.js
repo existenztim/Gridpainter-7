@@ -1,10 +1,8 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 import { checkLogin } from '../main';
-const BASE_URL = 'http://localhost:3000';
-const CLOUD_URL = 'https://sea-lion-app-cr49a.ondigitalocean.app';
 
 export function printChat() {
-    const socket = io(CLOUD_URL);
+    const socket = io('http://localhost:3000');
     let user = JSON.parse(localStorage.getItem('user'));
     const app = document.querySelector('#app');
     app.innerHTML = /*html*/ `
@@ -96,6 +94,7 @@ export function printChat() {
       if (room){    
       messages.innerHTML= "";
       roomNumber.innerText=`Chatting in: ${room}`;
+      
       if(!joinRoomBtn.classList.contains("inRoom")){
         socket.emit("join-room", room, user.name);
         joinRoomBtn.classList.toggle("inRoom");
@@ -115,6 +114,9 @@ export function printChat() {
     })
     const logoutBtn = document.querySelector('#logoutBtn');
     logoutBtn.addEventListener('click', () => {
+      // socket.emit("leave-room", "room1", user.name);
+      // socket.emit("leave-room", "room2", user.name);
+      // socket.emit("leave-room", "room3", user.name);
       localStorage.removeItem('user');
       game.innerHTML = '';
       checkLogin();
@@ -134,6 +136,7 @@ export function printChat() {
       let messageCapitalize = message.charAt(0).toUpperCase();
       roomUpdate.innerHTML = messageCapitalize + message.slice(1);
     });
+    
     socket.on('typing', (username) => {
       indicateTyping()
     });
