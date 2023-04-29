@@ -14,22 +14,20 @@ Before you follow these steps make sure you have node and git installed on your 
    zip".
 2. Open the project in a code editor (preferably Visual Studio Code).
 3. Open the terminal and go to the root of the backend folder (e.g. via [cd backend]).
-4. Then download all dependencies using git install.
+4. Then download all dependencies using npm install.
 5. Do the same steps in the root of the frontend folder (switch with command [cd ..] then [cd
    frontend]).
-6. Import the notes-tim-sundell.sql (preferably in phpMyAdmin).
-7. Add an .env file in your backend folder and assign 2 variables named MONGODB_URI_LOCAL and MONGODB_URI_CLOUD (depending on if you
-   want a local or cloud based database. 
+6. Change filename ".env copy" to ".env" in the backend folder.
    
-8. Now go to your backend folder and type [npm start] in your terminal (if you have nodemon
+7. Now go to your backend folder and type [npm start] in your terminal (if you have nodemon
    installed globally).
-9. If you don't have nodemon installed globally you have two options:
+8. If you don't have nodemon installed globally you have two options:
 
    1. Either install nodemon globally.
    2. Or go to package.json and change the line "start": "nodemon app.js" to: "start": "node app.js".
 
-10. Navigate to the frontend folder via the terminal.
-11. Type [npm run dev] and follow the link in the browser. Have fun!
+9. Navigate to the frontend folder via the terminal.
+10. Type [npm run dev] and follow the link in the browser. Have fun!
 
 
 # Code Stack
