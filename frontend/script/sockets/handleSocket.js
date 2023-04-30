@@ -3,7 +3,6 @@ const socket = io("http://localhost:3000");
 let user = JSON.parse(localStorage.getItem("user"));
 
 export const socketManagment = () => {
-  console.log("hey");
   const messages = document.querySelector(".messages");
   const chatbox = document.querySelector(".chatbox");
   socket.on("room-feedback", function (message) {
